@@ -4,6 +4,7 @@ imagePullPolicy: Always
 accountName: &accountName <account-name>
 clusterName: &clusterName <cluster-name>
 
+clusterToken: <cluster-token>
 clusterIdentitySecretName: kl-cluster-identity
 
 messageOfficeGRPCAddr: &messageOfficeGRPCAddr <message-office-api-domain>:443
@@ -15,8 +16,12 @@ agent:
   name: kl-agent
   image: <harbor-image-registry-host>/kloudlite/development/kl-agent:v1.0.5
 
-kloudlite-operators:
-  accountName: *accountName
-  clusterName: *clusterName
-
-  svcAccountName: *svcAccountName
+operators:
+  statusAndBilling:
+    enabled: true
+    name: kl-status-and-billing
+    image: <harbor-image-registry-host>/kloudlite/operators/development/status-n-billing:v1.0.5
+  byocClientOperator:
+    enabled: true
+    name: kl-byoc-client
+    image: <harbor-image-registry-host>/kloudlite/operators/development/byoc-client-operator:v1.0.5

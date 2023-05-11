@@ -63,8 +63,11 @@ spec:
             - name: MAX_CONCURRENT_RECONCILES
               value: "5"
 
+            - name: OPERATORS_NAMESPACE
+              value: {{.Release.Namespace}}
+
             - name: GRPC_ADDR
-              value: {{.Values.messageOfficeApi.grpcAddr}}
+              value: {{.Values.messageOfficeGRPCAddr}}
 
             - name: ACCOUNT_NAME
               value: {{.Values.accountName }}
