@@ -17,11 +17,7 @@ agent:
   image: {{.ImageRegistryHost}}/kloudlite/{{.EnvName}}/kl-agent:{{.ImageTag}}
 
 operators:
-  statusAndBilling:
+  resourceWatcher:
     enabled: true
-    name: kl-status-and-billing
-    image: {{.ImageRegistryHost}}/kloudlite/operators/{{.EnvName}}/status-n-billing:{{.ImageTag}}
-  byocClientOperator:
-    enabled: true
-    name: kl-byoc-client
-    image: {{.ImageRegistryHost}}/kloudlite/operators/{{.EnvName}}/byoc-client-operator:{{.ImageTag}}
+    name: kl-resource-watcher
+    image: {{.ImageRegistryHost}}/kloudlite/operators/{{.EnvName}}/resource-watcher:{{.ImageTag}}
