@@ -19,7 +19,6 @@ tasks:
       - echo "{{.HELM_DOCS}}"
 
   install:tmpl:
-    silent: true
     vars:
       Version: v1.0.0
     env:
