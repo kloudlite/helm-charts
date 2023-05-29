@@ -22,5 +22,6 @@ jobs:
           done
 
       - name: generate chart docs
+        shell: bash
         run: task generate-chart-docs
 
