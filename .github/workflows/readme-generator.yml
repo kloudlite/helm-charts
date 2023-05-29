@@ -11,7 +11,7 @@ jobs:
           fetch-depth: 0
 
       - |+
-        for item in "$(ls charts/)"
+        for item in `ls charts/`
         do
           pushd charts/$item
           task compile
