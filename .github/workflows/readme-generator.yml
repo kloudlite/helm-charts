@@ -12,6 +12,7 @@ jobs:
           fetch-depth: 0
 
       - name: generate values.yaml from values.yml.tpl
+        shell: bash
         run: |+
           for item in `ls charts/`
           do
