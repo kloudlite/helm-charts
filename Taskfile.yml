@@ -19,6 +19,7 @@ tasks:
       - echo "{{.HELM_DOCS}}"
 
   install:tmpl:
+    silent: true
     vars:
       Version: v1.0.0
     env:
@@ -31,6 +32,7 @@ tasks:
         popd
 
   install:schelm:
+    silent: true
     env:
       GOBIN: "{{.BinDir}}"
     cmds:
@@ -40,6 +42,7 @@ tasks:
         fi
 
   install:chart-doc-gen:
+    silent: true
     env:
       GOBIN: "{{.BinDir}}"
     cmds:
@@ -49,11 +52,12 @@ tasks:
         fi
 
   install:helm-docs:
+    silent: true
     env:
       GOBIN: "{{.BinDir}}"
     cmds:
       - |+
-        if ! [[ -f {{.CHART_DOC_GEN}} ]] then
+        if ! [[ -f {{.HELM_DOCS}} ]] then
           go install github.com/norwoodj/helm-docs/cmd/helm-docs@v1.11.0
         fi
 
