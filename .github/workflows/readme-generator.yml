@@ -11,6 +11,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
       - name: generate values.yaml from values.yml.tpl
         shell: bash
         run: |+
@@ -25,3 +30,9 @@ jobs:
         shell: bash
         run: task generate-chart-docs
 
+      - name: commit all of the changes
+        shell: bash
+        run: |+
+          git status -s
+          git add .
+          git commit -m "[workflow: readme-generator] generated README, and possibly updated values.yaml file from values.yml.tpl in individual charts"
