@@ -1,8 +1,9 @@
 name: Readme Generator
-
 on: push
+
 jobs:
   generate-readmes:
+    runs-on: ubuntu-latest
     container: ghcr.io/kloudlite/kloudlite-helm-charts-builder:dev
     steps:
       - name: Checkout
