@@ -31,7 +31,7 @@ jobs:
       # - name: push changes, if any back to github
       #   uses: stefanzweifel/git-auto-commit-action@v4
       #   with:
-      #     commit_message: "[workflow: readme-generator] generated README for charts, and possibly updated values.yaml file from values.yml.tpl in individual charts"
+      #     commit_message: ""
 
       - name: commit all of the changes
         shell: bash
@@ -41,5 +41,5 @@ jobs:
           git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git status -s
           git add .
-          git commit -m ""
+          git commit -m "[workflow: readme-generator] generated README for charts, and possibly updated values.yaml file from values.yml.tpl in individual charts" || echo "nothing to commit, quietly exiting" || exit 0
           git push
