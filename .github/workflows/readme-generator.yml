@@ -10,13 +10,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - |+
-        for item in `ls charts/`
-        do
-          pushd charts/$item
-          task compile
-          popd
-        done
+      - name: generate values.yaml from values.yml.tpl
+        run: |+
+          for item in `ls charts/`
+          do
+            pushd charts/$item
+            task compile
+            popd
+          done
 
-      - task generate-chart-docs
+      - name: generate chart docs
+        run: task generate-chart-docs
 
