@@ -11,13 +11,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Configure Git
-        shell: bash
-        run: |
-          echo "current working directory: $PWD"
-          ls -al
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      # - name: Configure Git
+      #   shell: bash
+      #   run: |
+      #     echo "current working directory: $PWD"
+      #     ls -al
+      #     git config user.name "$GITHUB_ACTOR"
+      #     git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: generate values.yaml from values.yml.tpl
         shell: bash
