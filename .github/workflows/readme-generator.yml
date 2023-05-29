@@ -36,9 +36,9 @@ jobs:
       - name: commit all of the changes
         shell: bash
         run: |+
-          git config --add safe.directory /__w/kloudlite-helm-charts/kloudlite-helm-charts
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config --global user.name "$GITHUB_ACTOR"
+          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config --global --add safe.directory /__w/kloudlite-helm-charts/kloudlite-helm-charts
           git status -s
           git add .
           git commit -m "[workflow: readme-generator] generated README, and possibly updated values.yaml file from values.yml.tpl in individual charts"
