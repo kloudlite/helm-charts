@@ -27,7 +27,7 @@ tasks:
       - mkdir -p {{.BinDir}}
       - |+
         pushd cmd/tmpl
-        go build -o {{.TMPL}} -ldflags="-s -w -X 'main.Version={{.Version}}'" .
+        go build -o {{.TMPL}} -ldflags="-s -w -X 'main.Version={{.Version}}'" -buildvcs=false .
         popd
 
   install:schelm:
