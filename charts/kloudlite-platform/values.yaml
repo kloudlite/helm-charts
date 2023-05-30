@@ -412,13 +412,6 @@ apps:
     # -- image (with tag) for infra api
     image: ghcr.io/kloudlite/platform/apis/infra-api:v1.0.5-nightly
 
-  
-  
-  
-  
-  
-  
-
   gatewayApi:
     # @ignored
     # -- workload name for gateway api
