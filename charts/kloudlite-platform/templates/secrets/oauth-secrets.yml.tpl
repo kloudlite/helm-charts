@@ -6,11 +6,11 @@ kind: Secret
 metadata:
   name: {{.Values.secretNames.oAuthSecret}}
   namespace: {{.Release.Namespace}}
+{{- if .Values.apps.authApi.configuration.oAuth2.github.enabled }}
 data:
-  {{- if .Values.apps.authApi.configuration.oAuth2.github.enabled }}
   github-app-pk.pem: |+
     {{.Values.apps.authApi.configuration.oAuth2.github.appPrivateKey}}
-  {{- end }}
+{{- end }}
 
 stringData:
   OAUTH2_ENABLED: {{.Values.apps.authApi.configuration.oAuth2.enabled | squote }}
