@@ -47,7 +47,7 @@ operators:
 
   wgOperator:
     # -- whether to enable wg operator
-    enabled: false
+    enabled: true
     # -- wg operator workload name
     # @ignored
     name: kl-wg-operator

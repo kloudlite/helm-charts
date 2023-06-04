@@ -16,11 +16,6 @@ tolerations: &tolerations []
 # -- (object) pod labels for all pods in this chart
 podLabels: &podLabels {}
 
-{{- /* imagePullSecret: */ -}}
-{{- /*   dockerconfigjson: {{.DockerConfigJson}} */ -}}
-
-
-
 operators:
   project:
     # -- whether to enable project operator
