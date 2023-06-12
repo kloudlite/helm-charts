@@ -18,17 +18,12 @@
 helm repo add kloudlite https://kloudlite.github.io/helm-charts
 helm repo update
 ```
-## Install Kloudlite CRDs
-
-```console
-curl -L0 https://github.com/kloudlite/helm-charts/releases/download/kloudlite-crds-1.0.5-nightly/crds.yml | kubectl apply -f -
-```
 
 ## Install Chart
 
-**Important:** only helm3 is supported
-**Important:** [kloudlite-operators](../kloudlite-operators) must be installed beforehand
-**Important:** ensure kloudlite CRDs have been installed
+**Important:** only helm3 is supported</br>
+**Important:** [kloudlite-operators](../kloudlite-operators) must be installed beforehand</br>
+**Important:** ensure kloudlite CRDs have been installed</br>
 
 ```console
 helm install [RELEASE_NAME] kloudlite/kloudlite-platform --namespace [NAMESPACE] [--create-namespace]
