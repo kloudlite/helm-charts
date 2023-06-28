@@ -131,16 +131,9 @@ jobs:
             cr package $dir --package-path $tar_dir
           done
 
-          uploadOpts=${opts[@]}
-          if $OVERWRITE_RELEASE_ASSETS; then
-            uploadOpts+=("--clobber")
-          fi
-
-          echo "uploading packaged helm-charts with cmd: \`gh release upload $RELEASE_TAG ${uploadOpts[@]} $tar_dir/*.tgz\`" 
-          eval gh release upload $RELEASE_TAG ${uploadOpts[@]} $tar_dir/*.tgz
-
           # remove entries related to the current release_tag, for all the charts
           curl -f -L0 https://${{github.actor}}.github.io/${{github.event.repository.name}}/index.yaml > $tar_dir/index.yaml
+          cat $tar_dir/index.yaml
 
           for dir in $(ls -d charts); do
             export CHART_NAME=$dir
@@ -148,6 +141,15 @@ jobs:
             cat $tar_dir/index.yaml | yq '. | .entries[env.CHART_NAME] = (.entries[env.CHART_NAME] | map_values(select(.appVersion != env.RELEASE_TAG)))' -y | tee /tmp/index2.yaml
             mv /tmp/index2.yaml $tar_dir/index.yaml
           done
+
+
+          uploadOpts=${opts[@]}
+          if $OVERWRITE_RELEASE_ASSETS; then
+            uploadOpts+=("--clobber")
+          fi
+
+          echo "uploading packaged helm-charts with cmd: \`gh release upload $RELEASE_TAG ${uploadOpts[@]} $tar_dir/*.tgz\`" 
+          eval gh release upload $RELEASE_TAG ${uploadOpts[@]} $tar_dir/*.tgz
 
           helm repo index $tar_dir --url https://github.com/$GITHUB_REPOSITORY/releases/download/$RELEASE_TAG --merge
           mkdir -p .static-pages
