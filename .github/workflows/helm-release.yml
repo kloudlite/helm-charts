@@ -135,8 +135,8 @@ jobs:
           curl -f -L0 https://${{github.actor}}.github.io/${{github.event.repository.name}}/index.yaml > $tar_dir/index.yaml
           cat $tar_dir/index.yaml
 
-          for dir in $(ls -d charts); do
-            export CHART_NAME=$dir
+          for dir in $(ls -d charts/*); do
+            export CHART_NAME=$(basename $dir)
             
             cat $tar_dir/index.yaml | yq '. | .entries[env.CHART_NAME] = (.entries[env.CHART_NAME] | map_values(select(.appVersion != env.RELEASE_TAG)))' -y | tee /tmp/index2.yaml
             mv /tmp/index2.yaml $tar_dir/index.yaml
