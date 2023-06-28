@@ -79,7 +79,9 @@ jobs:
 
           opts=("-R" "$GITHUB_REPOSITORY")
 
+          echo "here 1"
           release=$(gh release list ${opts[@]} | awk -F'\t' -v RELEASE_TAG="$RELEASE_TAG" '{print ($3 == RELEASE_TAG) ? RELEASE_TAG: "false"}' | grep -i $RELEASE_TAG)
+          echo "here2 , release: $release"
 
           if [[ -z $release ]]; then
             echo "going to create release, as RELEASE ($RELEASE_TAG) does not exist"
