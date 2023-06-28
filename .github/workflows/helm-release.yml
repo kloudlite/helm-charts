@@ -80,8 +80,7 @@ jobs:
           opts=("-R" "$GITHUB_REPOSITORY")
 
           echo "here 1"
-          echo "getting release by running \`gh release list ${opts[@]} | tail -n +1 | grep -iE '\b$RELEASE_TAG\b' | echo -n ''\`"
-          release=$(gh release list ${opts[@]} | tail -n +1 | grep -iE "\b$RELEASE_TAG\b" | echo -n "")
+          release=$(gh release list ${opts[@]} | tail -n +1 | (grep -iE "\\b$RELEASE_TAG\\b" || echo -n "") | awk '{print $3}')
           echo "here2 , release: $release"
 
           if [[ -z $release ]]; then
