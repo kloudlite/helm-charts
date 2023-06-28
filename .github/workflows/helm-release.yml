@@ -53,12 +53,12 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: Run image
+      - name: Setup pipx
         uses: CfirTsabari/actions-pipx@v1
 
       - name: Installing yq (with pipx)
         run: |+
-          pipx install xq
+          pipx install yq
 
       - name: Add repositories
         run: |
@@ -144,7 +144,7 @@ jobs:
 
           for dir in $(ls -d charts); do
             export CHART_NAME=$dir
-            cat $tar_dir/index.yaml | yq '.entries[env.CHART_NAME][] | select(.appVersion != env.RELEASE_TAG)' | tee /tmp/index2.yaml
+            cat $tar_dir/index.yaml | yq '.entries[env.CHART_NAME][] | select(.appVersion != env.RELEASE_TAG)' -y | tee /tmp/index2.yaml
             mv /tmp/index2.yaml $tar_dir/index.yaml
           done
 
