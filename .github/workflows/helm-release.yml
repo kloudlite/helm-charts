@@ -80,7 +80,7 @@ jobs:
           opts=("-R" "$GITHUB_REPOSITORY")
 
           echo "here 1"
-          echo "getting release by running \`gh release list ${opts[@]} | tail -n +1 | grep -iE "\b$RELEASE_TAG\b" | echo -n ""\` "
+          echo "getting release by running \`gh release list ${opts[@]} | tail -n +1 | grep -iE '\b$RELEASE_TAG\b' | echo -n ''\`"
           release=$(gh release list ${opts[@]} | tail -n +1 | grep -iE "\b$RELEASE_TAG\b" | echo -n "")
           echo "here2 , release: $release"
 
