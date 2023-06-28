@@ -144,7 +144,8 @@ jobs:
 
           for dir in $(ls -d charts); do
             export CHART_NAME=$dir
-            cat $tar_dir/index.yaml | yq '.entries[env.CHART_NAME][] | select(.appVersion != env.RELEASE_TAG)' -y | tee /tmp/index2.yaml
+            
+            cat $tar_dir/index.yaml | yq '. | .entries[env.CHART_NAME] = (.entries[env.CHART_NAME] | map_values(select(.appVersion != env.RELEASE_TAG)))' -y | tee /tmp/index2.yaml
             mv /tmp/index2.yaml $tar_dir/index.yaml
           done
 
