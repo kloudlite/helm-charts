@@ -55,6 +55,8 @@ jobs:
 
       - name: Run image
         uses: CfirTsabari/actions-pipx@v1
+
+      - name: Installing yq (with pipx)
         run: |+
           pipx install xq
 
