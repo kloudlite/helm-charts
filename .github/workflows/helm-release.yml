@@ -8,11 +8,11 @@ on:
         type: string
         description: "release tag that should be used for this release"
         required: true
-        default: ""
+        default: "${{ github.ref }}"
 
-      overwrite_release_assets:
+      overwrite_existing_release_assets_if_applicable:
         type: boolean
-        description: "Should Overwrite Release Assets"
+        description: "Should Overwrite Existing Release Assets, if applicable"
         required: false
         default: false
 
@@ -73,7 +73,7 @@ jobs:
         run: |+
           RELEASE_TAG=${{ github.event.inputs.release_tag }}
           PRE_RELEASE=${{ github.event.inputs.prerelease }}
-          OVERWRITE_RELEASE_ASSETS=${{ github.event.inputs.overwrite_release_assets }}
+          OVERWRITE_RELEASE_ASSETS=${{ github.event.inputs.overwrite_existing_release_assets_if_applicable }}
 
           RELEASE_TITLE="kloudlite-helm-charts"
 
@@ -82,7 +82,7 @@ jobs:
           release=$(gh release list ${opts[@]} | awk -F'\t' -v RELEASE_TAG="$RELEASE_TAG" '{print ($3 == RELEASE_TAG) ? RELEASE_TAG: "false"}' | grep -i $RELEASE_TAG)
 
           if [[ -z $release ]]; then
-            echo "going to create release, as it does not exist"
+            echo "going to create release, as RELEASE ($RELEASE_TAG) does not exist"
             createOpts=${opts[@]}
             if $PRE_RELEASE; then
               createOpts+=("--prerelease")
