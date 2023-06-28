@@ -79,9 +79,8 @@ jobs:
 
           opts=("-R" "$GITHUB_REPOSITORY")
 
-          echo "here 1"
           release=$(gh release list ${opts[@]} | tail -n +1 | (grep -iE "\s+$RELEASE_TAG\s+" || echo -n "") | awk '{print $3}')
-          echo "here2 , release: $release"
+          echo "release $release exists, going to build charts, now"
 
           if [[ -z $release ]]; then
             echo "going to create release, as RELEASE ($RELEASE_TAG) does not exist"
@@ -95,10 +94,8 @@ jobs:
             createOpts+=("--notes" "'$RELEASE_NOTES'")
 
             echo "creating github release with cmd: \`gh release create $RELEASE_TAG ${createOpts[@]}\` " 
-            eval gh release create $RELEASE_TAG ${createOpts[@]}
+            eval gh release create $RELEASE_TAG ${createOpts[@]} --generate-notes
           fi
-
-          echo "release exists, going to build packages"
 
           tar_dir=".chart-releases"
 
