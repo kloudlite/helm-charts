@@ -1,7 +1,6 @@
 # -- image pull policies for kloudlite pods, belonging to this chartvalues
 imagePullPolicy: Always
 
-# -- node selectors to apply on all the pods belonging to this release
 nodeSelector: &nodeSelector {}
 
 # -- tolerations for pods belonging to this release
@@ -13,6 +12,9 @@ podLabels: &podLabels {}
 # -- cookie domain dictates at what domain, the cookies should be set for auth or other purposes
 cookieDomain:  "{{.CookieDomain}}"
 
+# -- base domain for all routers exposed through this cluster
+baseDomain: {{.BaseDomain}}
+
 # @ignored
 # -- account cookie name, that console-api should expect, while any client communicates through it's graphql interface
 accountCookieName: "kloudlite-account"
@@ -20,6 +22,12 @@ accountCookieName: "kloudlite-account"
 # -- cluster cookie name, that console-api should expect, while any client communicates through it's graphql interface
 # @ignored
 clusterCookieName: "kloudlite-cluster"
+
+# -- service account for privileged k8s operations, like creating namespaces, apps, routers etc.
+clusterSvcAccount: {{.ClusterSvcAccount}}
+
+# -- service account for non k8s operations, just for specifying image pull secrets
+normalSvcAccount: {{.NormalSvcAccount}}
 
 # -- default project workspace name, that should be auto created, whenever you create a project
 defaultProjectWorkspaceName: "{{.DefaultProjectWorkspaceName}}"
@@ -266,16 +274,7 @@ cloudflareWildCardCert:
 
   # -- list of all SANs (Subject Alternative Names) for which wildcard certs should be created
   domains: 
-    - "*.{{.BaseDomain}}"
-
-# -- service account for privileged k8s operations, like creating namespaces, apps, routers etc.
-clusterSvcAccount: {{.ClusterSvcAccount}}
-
-# -- service account for non k8s operations, just for specifying image pull secrets
-normalSvcAccount: {{.NormalSvcAccount}}
-
-# -- base domain for all routers exposed through this cluster
-baseDomain: {{.BaseDomain}}
+    - '*.{{.BaseDomain}}'
 
 kafka:
   # -- consumer group ID for kafka consumers running with this helm chart

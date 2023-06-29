@@ -18,15 +18,12 @@ tasks:
   compile:
     vars:
       InstallationMode: dev
-      BaseDomain: dev.kloudlite.io
-      CookieDomain: .kloudlite.io
+      BaseDomain: platform.kloudlite.io
+      CookieDomain: ."{{.BaseDomain}}"
 
       ImagePrefix: "ghcr.io/kloudlite"
       ImageVersionTag: "v1.0.5-nightly"
     env:
-      EnvName: development
-      ImageTag: v1.0.5
-
       BaseDomain: "{{.BaseDomain}}"
       CookieDomain: "{{.CookieDomain}}"
 
