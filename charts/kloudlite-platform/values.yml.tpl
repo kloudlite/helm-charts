@@ -10,10 +10,10 @@ tolerations: &tolerations []
 podLabels: &podLabels {}
 
 # -- cookie domain dictates at what domain, the cookies should be set for auth or other purposes
-cookieDomain:  "{{.CookieDomain}}"
+cookieDomain: {{.CookieDomain | squote}}
 
 # -- base domain for all routers exposed through this cluster
-baseDomain: {{.BaseDomain}}
+baseDomain: {{.BaseDomain | squote }}
 
 # @ignored
 # -- account cookie name, that console-api should expect, while any client communicates through it's graphql interface
@@ -243,9 +243,6 @@ ingress-nginx:
       enabled: false
       failurePolicy: Ignore
 
-# -- namespace where chart kloudlite-operators have been installed
-operatorsNamespace: {{.OperatorsNamespace}}
-
 clusterIssuer:
   # -- whether to install cluster issuer
   create: true
@@ -260,8 +257,7 @@ cloudflareWildCardCert:
 
   # -- name for wildcard cert
   name: {{.WildcardCertName}}
-  # -- namespace for wildcard cert, (only if clusterIssuer.install == false)
-  namepace: {{.WildcardCertNamespace}}
+
   # -- k8s secret where wildcard cert should be stored
   secretName: {{.WildcardCertName}}-tls
 
@@ -531,6 +527,7 @@ apps:
       # @ignored
       grpcPort: 3001
 
+      # -- harbor configuration, required only if .apps.containerRegistryApi.enabled 
       harbor: &harborConfiguration
         # -- harbor api version
         apiVersion: v2.0
@@ -610,6 +607,13 @@ apps:
 
     # -- image (with tag) for message office api
     image: {{.ImageMessageOfficeApi}}
+
+    configuration:
+      # @ignored
+      grpcPort: 3001
+
+      # @ignored
+      httpPort: 3000
 
 operators:
   # -- kloudlite account operator

@@ -19,7 +19,7 @@ tasks:
     vars:
       InstallationMode: dev
       BaseDomain: platform.kloudlite.io
-      CookieDomain: ."{{.BaseDomain}}"
+      CookieDomain: ".{{.BaseDomain}}"
 
       ImagePrefix: "ghcr.io/kloudlite"
       ImageVersionTag: "v1.0.5-nightly"
@@ -34,8 +34,10 @@ tasks:
 
       IngressClassName: ingress-nginx
 
-      WildcardCertEnabled: false
+      WildcardCertEnabled: true
       WildcardCertName: kl-cert-wildcard
+      WildcardCertNamespace: "{{.ReleaseNamespace}}"
+
       CloudflareEmail: '<cloudflare-email>'
       CloudflareSecretToken: '<cloudflare-secret-token>'
       AcmeEmail: 'sample@example.com'
