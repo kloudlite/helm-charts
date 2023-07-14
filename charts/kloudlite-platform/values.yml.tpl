@@ -34,9 +34,9 @@ defaultProjectWorkspaceName: "{{.DefaultProjectWorkspaceName}}"
 
 persistence:
   # -- ext4 storage class name
-  storageClassName: {{.StorageClassName}}
+  storageClassName:  &ext4-storage-class {{.StorageClassName}}
   # -- xfs storage class name
-  XfsStorageClassName: {{.XfsStorageClassName}}
+  XfsStorageClassName: &xfs-storage-class {{.XfsStorageClassName}}
 
 # @ignored
 secretNames:
@@ -148,6 +148,191 @@ cert-manager:
         cpu: 80m
         # -- memory requests for cert-manager cainjector pods
         memory: 200Mi
+
+# -- vector configuration, read more at https://vector.dev/docs/setup/installation/package-managers/helm/
+vector:
+  # -- vector will be installed with aggregator role
+  install: true
+
+  podAnnotations: 
+    prometheus.io/scrape: "true"
+
+  replicas: 2
+  role: "Stateless-Aggregator"
+  customConfig:
+    data_dir: /vector-data-dir
+    api:
+      enabled: true
+      address: 127.0.0.1:8686
+      playground: false
+    sources:
+      {{/* datadog_agent: */}}
+      {{/*   address: 0.0.0.0:8282 */}}
+      {{/*   type: datadog_agent */}}
+      {{/* fluent: */}}
+      {{/*   address: 0.0.0.0:24224 */}}
+      {{/*   type: fluent */}}
+      {{/* internal_metrics: */}}
+      {{/*   type: internal_metrics */}}
+      {{/* logstash: */}}
+      {{/*   address: 0.0.0.0:5044 */}}
+      {{/*   type: logstash */}}
+      {{/* splunk_hec: */}}
+      {{/*   address: 0.0.0.0:8080 */}}
+      {{/*   type: splunk_hec */}}
+      {{/* statsd: */}}
+      {{/*   address: 0.0.0.0:8125 */}}
+      {{/*   mode: tcp */}}
+      {{/*   type: statsd */}}
+      {{/* syslog: */}}
+      {{/*   address: 0.0.0.0:9000 */}}
+      {{/*   mode: tcp */}}
+      {{/*   type: syslog */}}
+      vector:
+        address: 0.0.0.0:6000
+        type: vector
+        version: "2"
+    sinks:
+      prom_exporter:
+        type: prometheus_exporter
+        inputs: 
+          {{/* - internal_metrics */}}
+          - vector
+        address: 0.0.0.0:9090
+        {{/* address: prometheus-server:9090 */}}
+        {{/* inputs: */}}
+        {{/*   - my-source-or-transform-id */}}
+        {{/* address: 0.0.0.0:9598 */}}
+        flush_period_secs: 20
+
+      stdout:
+        type: console
+        {{/* inputs: [datadog_agent, fluent, logstash, splunk_hec, statsd, syslog, vector] */}}
+        inputs: [vector]
+        encoding:
+          codec: json
+
+# -- kube prometheus, read more at https://github.com/bitnami/charts/blob/main/bitnami/kube-prometheus/values.yaml
+kube-prometheus:
+  install: true
+  global:
+    storageClass: *ext4-storage-class
+  nameOverride: "kube-prometheus"
+  fullnameOverride: "kube-prometheus"
+
+  operator:
+    enabled: true
+    service:
+      kubeletService:
+        enabled: false
+    
+  prometheus:
+    enabled: true
+    image:
+      registry: docker.io
+      repository: bitnami/prometheus
+      tag: 2.45.0-debian-11-r2
+      digest: ""
+
+    enableAdminApi: true
+    retention: 10d
+    disableCompaction: false
+    walCompression: false
+    persistence:
+      enabled: true
+      size: 2Gi
+    paused: false
+
+    additionalScrapeConfigs:
+      enabled: true
+      type: internal
+      internal:
+        jobList:
+          - job_name: "kubernetes-pods"
+            kubernetes_sd_configs:
+              - role: pod
+
+            relabel_configs:
+              # Example relabel to scrape only pods that have
+              # "example.io/should_be_scraped = true" annotation.
+              - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+                action: keep
+                regex: true
+
+              # - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+              #   action: keep
+              #   regex: vector
+
+              # Example relabel to customize metric path based on pod
+              # "example.io/metric_path = <metric path>" annotation.
+              #  - source_labels: [__meta_kubernetes_pod_annotation_example_io_metric_path]
+              #    action: replace
+              #    target_label: __metrics_path__
+              #    regex: (.+)
+              #
+              # Example relabel to scrape only single, desired port for the pod
+              # based on pod "example.io/scrape_port = <port>" annotation.
+              #  - source_labels: [__address__, __meta_kubernetes_pod_annotation_example_io_scrape_port]
+              #    action: replace
+              #    regex: ([^:]+)(?::\d+)?;(\d+)
+              #    replacement: $1:$2
+              #    target_label: __address__
+
+              - action: labelmap
+                regex: __meta_kubernetes_pod_label_(.+)
+              - source_labels: [__meta_kubernetes_namespace]
+                action: replace
+                target_label: namespace
+              - source_labels: [__meta_kubernetes_pod_name]
+                action: replace
+                target_label: pod
+
+  alertmanager:
+    enabled: true
+    image:
+      registry: docker.io
+      repository: bitnami/alertmanager
+      tag: 0.25.0-debian-11-r65
+      digest: ""
+
+    persistence:
+      enabled: true
+      size: 2Gi
+    paused: false
+  
+  exporters:
+    node-exporter:
+      enabled: false
+    kube-state-metrics:
+      enabled: false
+  kubelet:
+    enabled: false
+  blackboxExporter:
+    enabled: false
+
+  kubeApiServer:
+    enabled: false
+  kubeControllerManager:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  coreDns:
+    enabled: false
+  kubeProxy:
+    enabled: false
+
+# -- grafana configuration, read more at https://github.com/bitnami/charts/blob/main/bitnami/grafana/values.yaml
+grafana:
+  install: true
+  global:
+    storageClass: *ext4-storage-class
+
+  nameOverride: grafana
+  fullnameOverride: grafana
+
+  persistence:
+    enabled: true
+    size: 5Gi
 
 # -- ingress class name that should be used for all the ingresses, created by this chart
 ingressClassName: {{.IngressClassName}}
@@ -371,7 +556,7 @@ routers:
     # @ignored
     # -- router name for message office api router
     name: message-office-api
-
+  
 apps:
   authApi:
     # @ignored
@@ -648,6 +833,3 @@ operators:
 
     # -- image (with tag) for byoc operator
     image: {{.ImageBYOCOperator}}
-
-{{/* vector: */}}
-{{/*   install: true */}}

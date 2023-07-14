@@ -22,3 +22,18 @@ dependencies:
     version: v1.11.0
     repository: https://charts.jetstack.io
     condition: cert-manager.install
+
+  - name: vector
+    version: 0.23.0
+    repository: https://helm.vector.dev
+    condition: vector.install
+
+  - name: kube-prometheus
+    version: 8.15.1
+    repository: https://charts.bitnami.com/bitnami
+    condition: kube-prometheus.install
+
+  - name: grafana
+    version: 9.0.1
+    repository: https://charts.bitnami.com/bitnami
+    condition: grafana.install

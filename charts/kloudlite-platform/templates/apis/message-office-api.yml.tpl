@@ -75,8 +75,8 @@ spec:
         - key: KAFKA_TOPIC_ERROR_ON_APPLY
           value: {{.Values.kafka.topicErrorOnApply}}
 
-        - key: KAFKA_TOPIC_BYOC_CLIENT_UPDATES
-          value: {{.Values.kafka.topicBYOCClientUpdates}}
+        - key: KAFKA_TOPIC_CLUSTER_UPDATES
+          value: {{.Values.kafka.topicClusterUpdates}}
 
         - key: KAFKA_CONSUMER_GROUP
           value: {{.Values.kafka.consumerGroupId}}
@@ -96,5 +96,9 @@ spec:
           refName: "{{.Values.secretNames.redpandaAdminAuthSecret}}"
           refKey: PASSWORD
 
+        - key: VECTOR_GRPC_ADDR
+          value: {{printf "%s-vector:6000" .Release.Name | quote}}
+
         - key: KLOUDLITE_CONTAINER_REGISTRY_ENABLED
           value: {{.Values.apps.containerRegistryApi.enabled | squote}}
+
