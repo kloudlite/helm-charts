@@ -25,6 +25,9 @@ messageOfficeGRPCAddr: {{.MessageOfficeGRPCAddr}}
 # -- k8s service account name, which all the pods installed by this chart uses
 svcAccountName: {{.ClusterSvcAccountName}}
 
+# -- vector service account name, which all the vector pods will use
+vectorSvcAccountName: &vector-svc-account-name {{.VectorSvcAccountName}}
+
 agent:
   # -- enable/disable kloudlite agent
   enabled: true
@@ -74,3 +77,104 @@ operators:
       podCidr: {{.WgPodCIDR}}
       # -- cluster services CIDR range
       svcCidr: {{.WgSvcCIDR}}
+
+vector:
+  install: true
+
+  role: Agent
+  containerPorts:
+    - containerPort: 6000
+
+  service:
+    enabled: false
+
+  serviceHeadless:
+    enabled: false
+
+  extraContainers:
+    - name: kubelet-metrics-reexporter
+      image: ghcr.io/nxtcoder17/kubelet-metrics-reexporter:v1.0.0
+      args:
+        - --addr
+        - "0.0.0.0:9999"
+        {{/* - --enrich-from-labels */}}
+        - --enrich-from-annotations
+        - --enrich-tag
+        - "kl_account_name={{.AccountName}}"
+        - --enrich-tag
+        - "kl_cluster_name={{.ClusterName}}"
+        - --filter-prefix
+        - "kloudlite.io/"
+        - --replace-prefix
+        - "kloudlite.io/=kl_"
+      env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+
+  serviceAccount:
+    create: false
+    name: *vector-svc-account-name
+
+  customConfig:
+    data_dir: /vector-data-dir
+    api:
+      enabled: true
+      address: 127.0.0.1:8686
+      playground: false
+    sources:
+      kubernetes_logs:
+        type: kubernetes_logs
+      host_metrics:
+        filesystem:
+          devices:
+            excludes: [binfmt_misc]
+          filesystems:
+            excludes: [binfmt_misc]
+          mountPoints:
+            excludes: ["*/proc/sys/fs/binfmt_misc"]
+        type: host_metrics
+      internal_metrics:
+        type: internal_metrics
+
+      {{/* prometheus_node_exporter: */}}
+      {{/*   type: prometheus_scrape */}}
+      {{/*   endpoints: */}}
+      {{/*     # - http://node-exporter-prometheus-node-exporter.helm-vector.svc.cluster.local:9100/metrics */}}
+      {{/*     - http://localhost:9100/metrics */}}
+
+      {{/* prometheus_kube_state_metrics_exporter: */}}
+      {{/*   type: prometheus_scrape */}}
+      {{/*   endpoints: */}}
+      {{/*     - http://kube-state-metrics.helm-vector.svc.cluster.local:8080/metrics */}}
+      {{/**/}}
+      kubelet_metrics_exporter:
+        type: prometheus_scrape
+        endpoints:
+          - http://localhost:9999/metrics/resource
+
+    sinks:
+      stdout:
+        type: console
+        inputs:
+          {{/* - kubernetes_logs */}}
+          {{/* - kubelet_metrics_exporter */}}
+          {{/* - prometheus_kube_state_metrics_exporter */}}
+          - kubelet_metrics_exporter
+        encoding:
+          codec: json
+
+      # -- custom configuration
+      kloudlite_hosted_vector:
+        type: vector
+        inputs:
+          - "*"
+        {{/* address: vector.dev.kloudlite.io:443 */}}
+        address: kl-agent.kl-init-operators.svc.cluster.local:6000
+        {{/* tls: */}}
+        {{/*   enabled: true */}}
+        {{/*   alpn_protocols: */}}
+        {{/*   - h2 */}}
+        {{/* version: "2" */}}
+

@@ -27,11 +27,13 @@ tasks:
 
       ClusterToken: "{{.Required}}"
       AccessToken: "''"
+
       ClusterIdentitySecretName: 'kl-cluster-identity'
 
       DefaultImagePullSecretName: "kl-image-pull-creds"
 
       ClusterSvcAccountName: cluster-svc-account
+      VectorSvcAccountName: vector-svc-account
 
       MessageOfficeGRPCAddr: message-office-api.dev.kloudlite.io:443
 

@@ -9,6 +9,10 @@ metadata:
 spec:
   replicas: 1
   serviceAccount: {{.Values.svcAccountName}}
+  services:
+    - port: 6000
+      targetPort: 6000
+      name: grpc
   containers:
     - name: main
       image: {{.Values.agent.image}}
@@ -46,6 +50,9 @@ spec:
 
         - key: IMAGE_PULL_SECRET_NAMESPACE
           value: {{.Release.Namespace}}
+        
+        - key: VECTOR_PROXY_GRPC_SERVER_ADDR
+          value: 0.0.0.0:6000
 
       resourceCpu:
         min: 30m
