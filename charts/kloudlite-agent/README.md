@@ -4,6 +4,12 @@
 
 ![Version: 1.0.5-nightly](https://img.shields.io/badge/Version-1.0.5--nightly-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.5-nightly](https://img.shields.io/badge/AppVersion-1.0.5--nightly-informational?style=flat-square)
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| https://helm.vector.dev | vector | 0.23.0 |
+
 ## Get Repo Info
 
 ```console
@@ -95,3 +101,42 @@ helm show values kloudlite/kloudlite-agent
 | operators.wgOperator.enabled | bool | `true` | whether to enable wg operator |
 | operators.wgOperator.image | string | `"ghcr.io/kloudlite/agent/operator/wg:v1.0.5-nightly"` | wg operator image and tag |
 | svcAccountName | string | `"cluster-svc-account"` | k8s service account name, which all the pods installed by this chart uses |
+| vector.containerPorts[0].containerPort | int | `6000` |  |
+| vector.customConfig.api.address | string | `"127.0.0.1:8686"` |  |
+| vector.customConfig.api.enabled | bool | `true` |  |
+| vector.customConfig.api.playground | bool | `false` |  |
+| vector.customConfig.data_dir | string | `"/vector-data-dir"` |  |
+| vector.customConfig.sinks.kloudlite_hosted_vector | object | `{"address":"kl-agent.kl-init-operators.svc.cluster.local:6000","inputs":["*"],"type":"vector"}` | custom configuration |
+| vector.customConfig.sinks.stdout.encoding.codec | string | `"json"` |  |
+| vector.customConfig.sinks.stdout.inputs[0] | string | `"kubelet_metrics_exporter"` |  |
+| vector.customConfig.sinks.stdout.type | string | `"console"` |  |
+| vector.customConfig.sources.host_metrics.filesystem.devices.excludes[0] | string | `"binfmt_misc"` |  |
+| vector.customConfig.sources.host_metrics.filesystem.filesystems.excludes[0] | string | `"binfmt_misc"` |  |
+| vector.customConfig.sources.host_metrics.filesystem.mountPoints.excludes[0] | string | `"*/proc/sys/fs/binfmt_misc"` |  |
+| vector.customConfig.sources.host_metrics.type | string | `"host_metrics"` |  |
+| vector.customConfig.sources.internal_metrics.type | string | `"internal_metrics"` |  |
+| vector.customConfig.sources.kubelet_metrics_exporter.endpoints[0] | string | `"http://localhost:9999/metrics/resource"` |  |
+| vector.customConfig.sources.kubelet_metrics_exporter.type | string | `"prometheus_scrape"` |  |
+| vector.customConfig.sources.kubernetes_logs.type | string | `"kubernetes_logs"` |  |
+| vector.extraContainers[0].args[0] | string | `"--addr"` |  |
+| vector.extraContainers[0].args[10] | string | `"kloudlite.io/=kl_"` |  |
+| vector.extraContainers[0].args[1] | string | `"0.0.0.0:9999"` |  |
+| vector.extraContainers[0].args[2] | string | `"--enrich-from-annotations"` |  |
+| vector.extraContainers[0].args[3] | string | `"--enrich-tag"` |  |
+| vector.extraContainers[0].args[4] | string | `"kl_account_name=‼️ Required"` |  |
+| vector.extraContainers[0].args[5] | string | `"--enrich-tag"` |  |
+| vector.extraContainers[0].args[6] | string | `"kl_cluster_name=‼️ Required"` |  |
+| vector.extraContainers[0].args[7] | string | `"--filter-prefix"` |  |
+| vector.extraContainers[0].args[8] | string | `"kloudlite.io/"` |  |
+| vector.extraContainers[0].args[9] | string | `"--replace-prefix"` |  |
+| vector.extraContainers[0].env[0].name | string | `"NODE_NAME"` |  |
+| vector.extraContainers[0].env[0].valueFrom.fieldRef.fieldPath | string | `"spec.nodeName"` |  |
+| vector.extraContainers[0].image | string | `"ghcr.io/nxtcoder17/kubelet-metrics-reexporter:v1.0.0"` |  |
+| vector.extraContainers[0].name | string | `"kubelet-metrics-reexporter"` |  |
+| vector.install | bool | `true` |  |
+| vector.role | string | `"Agent"` |  |
+| vector.service.enabled | bool | `false` |  |
+| vector.serviceAccount.create | bool | `false` |  |
+| vector.serviceAccount.name | string | `"vector-svc-account"` |  |
+| vector.serviceHeadless.enabled | bool | `false` |  |
+| vectorSvcAccountName | string | `"vector-svc-account"` | vector service account name, which all the vector pods will use |
