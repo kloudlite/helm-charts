@@ -157,60 +157,48 @@ vector:
   podAnnotations: 
     prometheus.io/scrape: "true"
 
-  replicas: 2
+  replicas: 1
   role: "Stateless-Aggregator"
+
+  existingConfigMaps: 
+    - "kloudlite-platform-vector"
+
   customConfig:
     data_dir: /vector-data-dir
-    api:
-      enabled: true
-      address: 127.0.0.1:8686
-      playground: false
-    sources:
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      vector:
-        address: 0.0.0.0:6000
-        type: vector
-        version: "2"
-    sinks:
-      prom_exporter:
-        type: prometheus_exporter
-        inputs: 
-          
-          - vector
-        address: 0.0.0.0:9090
-        
-        
-        
-        
-        flush_period_secs: 20
 
-      stdout:
-        type: console
-        
-        inputs: [vector]
-        encoding:
-          codec: json
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 # -- kube prometheus, read more at https://github.com/bitnami/charts/blob/main/bitnami/kube-prometheus/values.yaml
 kube-prometheus:
@@ -321,6 +309,9 @@ kube-prometheus:
   kubeProxy:
     enabled: false
 
+loki:
+  install: false
+
 # -- grafana configuration, read more at https://github.com/bitnami/charts/blob/main/bitnami/grafana/values.yaml
 grafana:
   install: true
@@ -332,7 +323,7 @@ grafana:
 
   persistence:
     enabled: true
-    size: 5Gi
+    size: 2Gi
 
 # -- ingress class name that should be used for all the ingresses, created by this chart
 ingressClassName: ingress-nginx

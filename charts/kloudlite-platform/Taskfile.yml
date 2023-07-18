@@ -70,6 +70,7 @@ tasks:
       StripeSecretKey: <stripe-private-key>
 
       DnsName: "ns1.{{.BaseDomain}}"
+
       EdgeCNAME: "edge.{{.BaseDomain}}"
 
       WebhookAuthzGitlabSecret: '<webhook-authz-gitlab-secret>'
@@ -110,6 +111,13 @@ tasks:
       # IngressControllerKind: "Deployment"
 
       ContainerRegistryApiEnabled: false
+
+      LokiS3BucketName: "<loki-s3-bucket-name>"
+      LokiS3BucketRegion: "<loki-s3-bucket-region>"
+      LokiS3BucketEndpoint: "<loki-s3-bucket-endpoint>"
+      LokiS3AwsAccessKeyId: "<loki-s3-aws-access-key-id>"
+      LokiS3AwsSecretAccessKey: "<loki-s3-aws-secret-access-key>"
+      LokiS3ForcePathStyle: true
     cmds:
       - task: cmd:setup
       - |+

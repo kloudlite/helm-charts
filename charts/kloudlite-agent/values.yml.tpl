@@ -124,57 +124,28 @@ vector:
       address: 127.0.0.1:8686
       playground: false
     sources:
+      host_metrics:
+      internal_metrics:
       kubernetes_logs:
         type: kubernetes_logs
-      host_metrics:
-        filesystem:
-          devices:
-            excludes: [binfmt_misc]
-          filesystems:
-            excludes: [binfmt_misc]
-          mountPoints:
-            excludes: ["*/proc/sys/fs/binfmt_misc"]
-        type: host_metrics
-      internal_metrics:
-        type: internal_metrics
-
-      {{/* prometheus_node_exporter: */}}
-      {{/*   type: prometheus_scrape */}}
-      {{/*   endpoints: */}}
-      {{/*     # - http://node-exporter-prometheus-node-exporter.helm-vector.svc.cluster.local:9100/metrics */}}
-      {{/*     - http://localhost:9100/metrics */}}
-
-      {{/* prometheus_kube_state_metrics_exporter: */}}
-      {{/*   type: prometheus_scrape */}}
-      {{/*   endpoints: */}}
-      {{/*     - http://kube-state-metrics.helm-vector.svc.cluster.local:8080/metrics */}}
-      {{/**/}}
       kubelet_metrics_exporter:
         type: prometheus_scrape
         endpoints:
           - http://localhost:9999/metrics/resource
 
     sinks:
-      stdout:
-        type: console
-        inputs:
-          {{/* - kubernetes_logs */}}
-          {{/* - kubelet_metrics_exporter */}}
-          {{/* - prometheus_kube_state_metrics_exporter */}}
-          - kubelet_metrics_exporter
-        encoding:
-          codec: json
+      stdout: 
+      {{/* stdout: */}}
+      {{/*   type: console */}}
+      {{/*   inputs: */}}
+      {{/*     - "*" */}}
+      {{/*   encoding: */}}
+      {{/*     codec: json */}}
 
       # -- custom configuration
       kloudlite_hosted_vector:
         type: vector
         inputs:
           - "*"
-        {{/* address: vector.dev.kloudlite.io:443 */}}
         address: kl-agent.kl-init-operators.svc.cluster.local:6000
-        {{/* tls: */}}
-        {{/*   enabled: true */}}
-        {{/*   alpn_protocols: */}}
-        {{/*   - h2 */}}
-        {{/* version: "2" */}}
 

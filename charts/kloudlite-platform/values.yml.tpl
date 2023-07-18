@@ -8,6 +8,7 @@ tolerations: &tolerations []
 
 # -- podlabels for pods belonging to this release
 podLabels: &podLabels {}
+  {{/* managed-by: "kloudlite-platform" */}}
 
 # -- cookie domain dictates at what domain, the cookies should be set for auth or other purposes
 cookieDomain: {{.CookieDomain | squote}}
@@ -32,6 +33,14 @@ normalSvcAccount: {{.NormalSvcAccount}}
 # -- default project workspace name, that should be auto created, whenever you create a project
 defaultProjectWorkspaceName: "{{.DefaultProjectWorkspaceName}}"
 
+
+subcharts:
+  ingress-nginx:
+    install: true
+    # -- can be DaemonSet or deployment
+    controllerKind: "DaemonSet" 
+    ingressClassName: "ingress-nginx"
+
 persistence:
   # -- ext4 storage class name
   storageClassName:  &ext4-storage-class {{.StorageClassName}}
@@ -51,6 +60,7 @@ secretNames:
 
 # -- redpanda operator configuration, read more at https://vectorized.io/docs/quick-start-kubernetes
 redpanda-operator:
+  install: false
   nameOverride: redpanda-operator
   fullnameOverride: redpanda-operator
 
@@ -84,7 +94,7 @@ redpandaCluster:
 # -- configuration option for cert-manager (https://cert-manager.io/docs/installation/helm/)
 cert-manager:
   # -- whether to install cert-manager
-  install: true
+  install: false
 
   # -- cert-manager whether to install CRDs
   installCRDs: false
@@ -152,13 +162,19 @@ cert-manager:
 # -- vector configuration, read more at https://vector.dev/docs/setup/installation/package-managers/helm/
 vector:
   # -- vector will be installed with aggregator role
-  install: true
+  install: false
 
   podAnnotations: 
     prometheus.io/scrape: "true"
 
-  replicas: 2
+  replicas: 1
   role: "Stateless-Aggregator"
+
+  {{/* existingConfigMaps:  */}}
+  {{/*   - "kloudlite-platform-vector" */}}
+  {{/**/}}
+  {{/* dataDir: /vector-data-dir */}}
+
   customConfig:
     data_dir: /vector-data-dir
     api:
@@ -166,28 +182,6 @@ vector:
       address: 127.0.0.1:8686
       playground: false
     sources:
-      {{/* datadog_agent: */}}
-      {{/*   address: 0.0.0.0:8282 */}}
-      {{/*   type: datadog_agent */}}
-      {{/* fluent: */}}
-      {{/*   address: 0.0.0.0:24224 */}}
-      {{/*   type: fluent */}}
-      {{/* internal_metrics: */}}
-      {{/*   type: internal_metrics */}}
-      {{/* logstash: */}}
-      {{/*   address: 0.0.0.0:5044 */}}
-      {{/*   type: logstash */}}
-      {{/* splunk_hec: */}}
-      {{/*   address: 0.0.0.0:8080 */}}
-      {{/*   type: splunk_hec */}}
-      {{/* statsd: */}}
-      {{/*   address: 0.0.0.0:8125 */}}
-      {{/*   mode: tcp */}}
-      {{/*   type: statsd */}}
-      {{/* syslog: */}}
-      {{/*   address: 0.0.0.0:9000 */}}
-      {{/*   mode: tcp */}}
-      {{/*   type: syslog */}}
       vector:
         address: 0.0.0.0:6000
         type: vector
@@ -196,25 +190,30 @@ vector:
       prom_exporter:
         type: prometheus_exporter
         inputs: 
-          {{/* - internal_metrics */}}
           - vector
         address: 0.0.0.0:9090
-        {{/* address: prometheus-server:9090 */}}
-        {{/* inputs: */}}
-        {{/*   - my-source-or-transform-id */}}
-        {{/* address: 0.0.0.0:9598 */}}
         flush_period_secs: 20
+
+      loki:
+        type: loki
+        inputs:
+          - vector
+        endpoint: http://loki.helm-loki:3100
+        encoding:
+          codec: logfmt
+        labels: 
+          source: vector
+          kl_app: '{{printf "{{ kubernetes.pod_labels.app }}" }}'
 
       stdout:
         type: console
-        {{/* inputs: [datadog_agent, fluent, logstash, splunk_hec, statsd, syslog, vector] */}}
         inputs: [vector]
         encoding:
           codec: json
 
 # -- kube prometheus, read more at https://github.com/bitnami/charts/blob/main/bitnami/kube-prometheus/values.yaml
 kube-prometheus:
-  install: true
+  install: false
   global:
     storageClass: *ext4-storage-class
   nameOverride: "kube-prometheus"
@@ -321,9 +320,12 @@ kube-prometheus:
   kubeProxy:
     enabled: false
 
+loki:
+  install: false
+
 # -- grafana configuration, read more at https://github.com/bitnami/charts/blob/main/bitnami/grafana/values.yaml
 grafana:
-  install: true
+  install: false
   global:
     storageClass: *ext4-storage-class
 
@@ -332,7 +334,7 @@ grafana:
 
   persistence:
     enabled: true
-    size: 5Gi
+    size: 2Gi
 
 # -- ingress class name that should be used for all the ingresses, created by this chart
 ingressClassName: {{.IngressClassName}}
@@ -340,7 +342,7 @@ ingressClassName: {{.IngressClassName}}
 # -- ingress nginx configurations, read more at https://kubernetes.github.io/ingress-nginx/
 ingress-nginx:
   # -- whether to install ingress-nginx
-  install: true
+  install: false
 
   nameOverride: {{.IngressClassName}}
 
