@@ -146,6 +146,7 @@ vector:
       kloudlite_hosted_vector:
         type: vector
         inputs:
-          - "*"
+          - kubernetes_logs
+          - kubelet_metrics_exporter
         address: kl-agent.kl-init-operators.svc.cluster.local:6000
 
