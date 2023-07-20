@@ -33,14 +33,22 @@ normalSvcAccount: {{.NormalSvcAccount}}
 # -- default project workspace name, that should be auto created, whenever you create a project
 defaultProjectWorkspaceName: "{{.DefaultProjectWorkspaceName}}"
 
-
 subcharts:
   ingress-nginx:
     install: true
-    # -- can be DaemonSet or deployment
-    controllerKind: "DaemonSet" 
-    ingressClassName: "ingress-nginx"
-
+    # -- can be DaemonSet or Deployment
+    {{/* controllerKind: "DaemonSet"  */}}
+    controllerKind: "{{.IngressControllerKind}}" 
+    ingressClassName: "{{.IngressClassName}}"
+  
+  loki-stack:
+    install: true
+    s3credentials:
+      awsAccessKeyId: {{.LokiS3AwsAccessKeyId}}
+      awsSecretAccessKey: {{.LokiS3AwsSecretAccessKey}}
+      region: {{.LokiS3BucketRegion}}
+      bucketName: {{.LokiS3BucketName}}
+      
 persistence:
   # -- ext4 storage class name
   storageClassName:  &ext4-storage-class {{.StorageClassName}}
@@ -521,7 +529,7 @@ routers:
   authWeb: 
     # @ignored
     # -- router name for auth web router
-    name: auth-web
+    name: auth
 
   accountsWeb: 
     # @ignored
@@ -570,10 +578,10 @@ apps:
     configuration:
       oAuth2:
         # -- whether to enable oAuth2
-        enabled: false
+        enabled: {{.OAuth2Enabled}}
         github:
           # -- whether to enable github oAuth2
-          enabled: false
+          enabled: {{.OAuth2GithubEnabled}}
           # -- github oAuth2 callback url
           callbackUrl: https://auth.{{.BaseDomain}}/oauth2/callback/github
           # -- github oAuth2 Client ID
@@ -590,7 +598,7 @@ apps:
 
         gitlab: 
           # -- whether to enable gitlab oAuth2
-          enabled: false
+          enabled: {{.OAuth2GitlabEnabled}}
           # -- gitlab oAuth2 callback url
           callbackUrl: https://auth.{{.BaseDomain}}/oauth2/callback/gitlab
           # -- gitlab oAuth2 Client ID
@@ -602,7 +610,7 @@ apps:
 
         google:
           # -- whether to enable google oAuth2
-          enabled: false
+          enabled: {{.OAuth2GoogleEnabled}}
           # -- google oAuth2 callback url
           callbackUrl: https://auth.{{.BaseDomain}}/oauth2/callback/google
           # -- google oAuth2 Client ID
@@ -801,6 +809,9 @@ apps:
 
       # @ignored
       httpPort: 3000
+
+      # -- token hashing secret, that is used to hash access tokens for kloudlite agents
+      tokenHashingSecret: {{.TokenHashingSecret}}
 
 operators:
   # -- kloudlite account operator

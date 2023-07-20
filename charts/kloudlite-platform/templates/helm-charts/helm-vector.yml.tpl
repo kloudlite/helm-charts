@@ -46,7 +46,7 @@ spec:
           type: loki
           inputs:
             - vector
-          endpoint: http://loki.helm-loki:3100
+          endpoint: http://{{include "loki.name" . }}.{{.Release.Namespace}}:3100
           encoding:
             codec: logfmt
           labels: 

@@ -97,8 +97,8 @@ spec:
           refKey: PASSWORD
 
         - key: VECTOR_GRPC_ADDR
-          value: {{printf "%s-vector:6000" .Release.Name | quote}}
+          value: {{printf "%s:6000" (include "vector.name" .) | quote}}
 
-        - key: KLOUDLITE_CONTAINER_REGISTRY_ENABLED
-          value: {{.Values.apps.containerRegistryApi.enabled | squote}}
+        - key: TOKEN_HASHING_SECRET
+          value: {{.Values.apps.messageOfficeApi.configuration.tokenHashingSecret | squote}}
 

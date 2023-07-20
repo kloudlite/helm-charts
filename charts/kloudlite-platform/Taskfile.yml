@@ -32,6 +32,7 @@ tasks:
       ClusterSvcAccount: kloudlite-cluster-svc-account
       NormalSvcAccount: kloudlite-svc-account
 
+      IngressControllerKind: "Deployment"
       IngressClassName: ingress-nginx
 
       WildcardCertEnabled: true
@@ -53,6 +54,12 @@ tasks:
       SupportEmail: '<support-email>'
       StorageClassName: <storage-class-name>
       XfsStorageClassName: <xfs-sc>
+
+      OAuth2Enabled: false
+      OAuth2GithubEnabled: false
+      OAuth2GitlabEnabled: false
+      OAuth2GoogleEnabled: false
+
 
       # github oAuth
       OAuthGithubClientId: <github-client-id>
