@@ -59,24 +59,12 @@ operators:
 
     # -- wireguard configuration options
     configuration:
-      # -- dns nameserver http endpoint
-      nameserver:
-        endpoint: {{.DnsApiEndpoint}}
-        # -- basic auth configurations for dns nameserver http endpoint
-        basicAuth:
-          # -- whether to enable basic auth for dns nameserver http endpoint
-          enabled: {{.DnsApiBasicAuthEnabled}}
-          # -- if enabled, basic auth username for dns nameserver http endpoint
-          username: {{.DnsApiBasicAuthUsername}}
-          # -- if enabled, basic auth password for dns nameserver http endpoint
-          password: {{.DnsApiBasicAuthPassword}}
-
-      # -- baseDomain for wireguard service, to be exposed
-      baseDomain: {{.WgDomain}}
       # -- cluster pods CIDR range
-      podCidr: {{.WgPodCIDR}}
+      podCIDR: {{.WgPodCIDR}}
       # -- cluster services CIDR range
-      svcCidr: {{.WgSvcCIDR}}
+      svcCIDR: {{.WgSvcCIDR}}
+      # -- dns hosted zone, i.e. dns pointing to this cluster
+      dnsHostedZone: {{.WgDnsHostedZone}}
 
 vector:
   install: true
