@@ -60,7 +60,6 @@ tasks:
       OAuth2GitlabEnabled: false
       OAuth2GoogleEnabled: false
 
-
       # github oAuth
       OAuthGithubClientId: <github-client-id>
       OAuthGithubClientSecret: <github-client-secret>
@@ -125,6 +124,9 @@ tasks:
       LokiS3AwsAccessKeyId: "<loki-s3-aws-access-key-id>"
       LokiS3AwsSecretAccessKey: "<loki-s3-aws-secret-access-key>"
       LokiS3ForcePathStyle: true
+
+      # consider using 128 chars secrets, you can use `python -c "import secrets; print(secrets.token_urlsafe(128))"`
+      TokenHashingSecret: '<token-hashing-secret>' 
     cmds:
       - task: cmd:setup
       - |+

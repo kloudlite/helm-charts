@@ -26,11 +26,11 @@ spec:
       image: {{.Values.apps.messageOfficeApi.image}}
       imagePullPolicy: {{.Values.apps.messageOfficeApi.ImagePullPolicy | default .Values.imagePullPolicy }}
       resourceCpu:
-        min: "50m"
-        max: "100m"
+        min: "100m"
+        max: "150m"
       resourceMemory:
-        min: "50Mi"
-        max: "100Mi"
+        min: "100Mi"
+        max: "150Mi"
       env:
         - key: HTTP_PORT
           value: {{.Values.apps.messageOfficeApi.configuration.httpPort | squote}}

@@ -8,6 +8,7 @@ tolerations: &tolerations []
 
 # -- podlabels for pods belonging to this release
 podLabels: &podLabels {}
+  
 
 # -- cookie domain dictates at what domain, the cookies should be set for auth or other purposes
 cookieDomain: '.platform.kloudlite.io'
@@ -32,6 +33,22 @@ normalSvcAccount: kloudlite-svc-account
 # -- default project workspace name, that should be auto created, whenever you create a project
 defaultProjectWorkspaceName: "default"
 
+subcharts:
+  ingress-nginx:
+    install: true
+    # -- can be DaemonSet or Deployment
+    
+    controllerKind: "Deployment" 
+    ingressClassName: "ingress-nginx"
+  
+  loki-stack:
+    install: true
+    s3credentials:
+      awsAccessKeyId: <loki-s3-aws-access-key-id>
+      awsSecretAccessKey: <loki-s3-aws-secret-access-key>
+      region: <loki-s3-bucket-region>
+      bucketName: <loki-s3-bucket-name>
+      
 persistence:
   # -- ext4 storage class name
   storageClassName:  &ext4-storage-class <storage-class-name>
@@ -51,6 +68,7 @@ secretNames:
 
 # -- redpanda operator configuration, read more at https://vectorized.io/docs/quick-start-kubernetes
 redpanda-operator:
+  install: false
   nameOverride: redpanda-operator
   fullnameOverride: redpanda-operator
 
@@ -84,7 +102,7 @@ redpandaCluster:
 # -- configuration option for cert-manager (https://cert-manager.io/docs/installation/helm/)
 cert-manager:
   # -- whether to install cert-manager
-  install: true
+  install: false
 
   # -- cert-manager whether to install CRDs
   installCRDs: false
@@ -152,7 +170,7 @@ cert-manager:
 # -- vector configuration, read more at https://vector.dev/docs/setup/installation/package-managers/helm/
 vector:
   # -- vector will be installed with aggregator role
-  install: true
+  install: false
 
   podAnnotations: 
     prometheus.io/scrape: "true"
@@ -160,49 +178,50 @@ vector:
   replicas: 1
   role: "Stateless-Aggregator"
 
-  existingConfigMaps: 
-    - "kloudlite-platform-vector"
+  
+  
+  
+  
 
   customConfig:
     data_dir: /vector-data-dir
+    api:
+      enabled: true
+      address: 127.0.0.1:8686
+      playground: false
+    sources:
+      vector:
+        address: 0.0.0.0:6000
+        type: vector
+        version: "2"
+    sinks:
+      prom_exporter:
+        type: prometheus_exporter
+        inputs: 
+          - vector
+        address: 0.0.0.0:9090
+        flush_period_secs: 20
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+      loki:
+        type: loki
+        inputs:
+          - vector
+        endpoint: http://loki.helm-loki:3100
+        encoding:
+          codec: logfmt
+        labels: 
+          source: vector
+          kl_app: '{{ kubernetes.pod_labels.app }}'
+
+      stdout:
+        type: console
+        inputs: [vector]
+        encoding:
+          codec: json
 
 # -- kube prometheus, read more at https://github.com/bitnami/charts/blob/main/bitnami/kube-prometheus/values.yaml
 kube-prometheus:
-  install: true
+  install: false
   global:
     storageClass: *ext4-storage-class
   nameOverride: "kube-prometheus"
@@ -314,7 +333,7 @@ loki:
 
 # -- grafana configuration, read more at https://github.com/bitnami/charts/blob/main/bitnami/grafana/values.yaml
 grafana:
-  install: true
+  install: false
   global:
     storageClass: *ext4-storage-class
 
@@ -331,7 +350,7 @@ ingressClassName: ingress-nginx
 # -- ingress nginx configurations, read more at https://kubernetes.github.io/ingress-nginx/
 ingress-nginx:
   # -- whether to install ingress-nginx
-  install: true
+  install: false
 
   nameOverride: ingress-nginx
 
@@ -480,7 +499,7 @@ routers:
   authWeb: 
     # @ignored
     # -- router name for auth web router
-    name: auth-web
+    name: auth
 
   accountsWeb: 
     # @ignored
@@ -760,6 +779,10 @@ apps:
 
       # @ignored
       httpPort: 3000
+
+      # -- token hashing secret, that is used to hash access tokens for kloudlite agents
+      # -- consider using 128 chars random string, you can use `python -c "import secrets; print(secrets.token_urlsafe(128))"`
+      tokenHashingSecret: <token-hashing-secret>
 
 operators:
   # -- kloudlite account operator

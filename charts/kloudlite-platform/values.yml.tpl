@@ -811,6 +811,7 @@ apps:
       httpPort: 3000
 
       # -- token hashing secret, that is used to hash access tokens for kloudlite agents
+      # -- consider using 128 chars random string, you can use `python -c "import secrets; print(secrets.token_urlsafe(128))"`
       tokenHashingSecret: {{.TokenHashingSecret}}
 
 operators:
