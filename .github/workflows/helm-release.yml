@@ -53,13 +53,6 @@ jobs:
         with:
           python-version: 3.9
 
-      # - name: Setup pipx
-      #   uses: CfirTsabari/actions-pipx@v1
-
-      # - name: Installing yq (with pipx)
-      #   run: |+
-      #     pipx install yq
-
       - name: Installing yq (with pip)
         run: |+
           pip install yq
@@ -149,7 +142,7 @@ jobs:
           for dir in $(ls -d charts/*); do
             export CHART_NAME=$(basename $dir)
             
-            cat $tar_dir/index.yaml | yq '. | .entries[env.CHART_NAME] = (.entries[env.CHART_NAME] | map_values(select( (. != null) and (.appVersion != env.RELEASE_TAG) )))' -y | tee /tmp/index2.yaml
+            cat $tar_dir/index.yaml | yq '. | .entries[env.CHART_NAME] = (.entries[env.CHART_NAME] | map_values(select( (. != null) and (.appVersion != env.RELEASE_TAG) )))' -y > /tmp/index2.yaml
 
             mv /tmp/index2.yaml $tar_dir/index.yaml
           done
@@ -157,6 +150,7 @@ jobs:
           helm repo index $tar_dir --url https://github.com/$GITHUB_REPOSITORY/releases/download/$RELEASE_TAG --merge $tar_dir/index.yaml
           mkdir -p .static-pages
           cp $tar_dir/index.yaml .static-pages/index.yaml
+          gh release upload $RELEASE_TAG ${uploadOpts[@]} .static-pages/index.yaml
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
