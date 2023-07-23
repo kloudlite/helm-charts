@@ -142,12 +142,14 @@ jobs:
 
           # remove entries related to the current release_tag, for all the charts
           curl -f -L0 https://${{github.repository_owner}}.github.io/${{github.event.repository.name}}/index.yaml > $tar_dir/index.yaml
+          echo "++++++++++++++++++++ Current index.yaml ++++++++++++++++++++"
           cat $tar_dir/index.yaml
+          echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 
           for dir in $(ls -d charts/*); do
             export CHART_NAME=$(basename $dir)
             
-            cat $tar_dir/index.yaml | yq '. | .entries[env.CHART_NAME] = (.entries[env.CHART_NAME] | map_values(select(.appVersion != env.RELEASE_TAG)))' -y | tee /tmp/index2.yaml
+            cat $tar_dir/index.yaml | yq '. | .entries[env.CHART_NAME] = (.entries[env.CHART_NAME] | map_values(select( (. != null) and (.appVersion != env.RELEASE_TAG) )))' -y | tee /tmp/index2.yaml
 
             mv /tmp/index2.yaml $tar_dir/index.yaml
           done
@@ -155,7 +157,6 @@ jobs:
           helm repo index $tar_dir --url https://github.com/$GITHUB_REPOSITORY/releases/download/$RELEASE_TAG --merge $tar_dir/index.yaml
           mkdir -p .static-pages
           cp $tar_dir/index.yaml .static-pages/index.yaml
-
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
