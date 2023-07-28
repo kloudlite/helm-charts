@@ -5,7 +5,7 @@
 {{- define "from-logs.kubernetes.pod_annotations" }}
 {{- $labelName := . -}} 
 {{- printf "{{- printf \"{{ \" }}" }}
-{{- /* should come up, something like 'kubernetes.pod_annotatons."kloudlite.io/resource_name"', refer to https://vector.dev/docs/reference/vrl/expressions/#path-example-quoted-path */}}
+{{- /* should come up, something like 'kubernetes.pod_annotatons."<pod-annotations>"', refer to https://vector.dev/docs/reference/vrl/expressions/#path-example-quoted-path */}}
 {{- printf "kubernetes.pod_annotations.\"%s\"" $labelName }}
 {{- printf "{{- printf \" }}\" }}" }}
 {{ end }}
@@ -13,7 +13,7 @@
 {{- define "from-logs.kubernetes.namespace_labels" }}
 {{- $labelName := . -}} 
 {{- printf "{{- printf \"{{ \" }}" }}
-{{- /* should come up, something like 'kubernetes.pod_annotatons."kloudlite.io/resource_name"', refer to https://vector.dev/docs/reference/vrl/expressions/#path-example-quoted-path */}}
+{{- /* should come up, something like 'kubernetes.namespace_labels."<label-name>"', refer to https://vector.dev/docs/reference/vrl/expressions/#path-example-quoted-path */}}
 {{- printf "kubernetes.namespace_labels.\"%s\"" $labelName }}
 {{- printf "{{- printf \" }}\" }}" }}
 {{ end }}
@@ -22,7 +22,7 @@
 {{- define "from-logs.kubernetes" }}
 {{- $labelName := . -}} 
 {{- printf "{{- printf \"{{ \" }}" }}
-{{- /* should come up, something like 'kubernetes.pod_annotatons."kloudlite.io/resource_name"', refer to https://vector.dev/docs/reference/vrl/expressions/#path-example-quoted-path */}}
+{{- /* should come up, something like 'kubernetes."<field-name>"', refer to https://vector.dev/docs/reference/vrl/expressions/#path-example-quoted-path */}}
 {{- printf "kubernetes.\"%s\"" $labelName }}
 {{- printf "{{- printf \" }}\" }}" }}
 {{ end }}
