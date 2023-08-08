@@ -33,6 +33,9 @@ normalSvcAccount: {{.NormalSvcAccount}}
 # -- default project workspace name, that should be auto created, whenever you create a project
 defaultProjectWorkspaceName: "{{.DefaultProjectWorkspaceName}}"
 
+# -- LogsAndMetricsHttpPort
+LogsAndMetricsHttpPort: "{{.LogsAndMetricsHttpPort}}"
+
 subcharts:
   ingress-nginx:
     install: true

@@ -33,6 +33,9 @@ normalSvcAccount: kloudlite-svc-account
 # -- default project workspace name, that should be auto created, whenever you create a project
 defaultProjectWorkspaceName: "default"
 
+# -- LogsAndMetricsHttpPort
+LogsAndMetricsHttpPort: "8192"
+
 subcharts:
   ingress-nginx:
     install: true

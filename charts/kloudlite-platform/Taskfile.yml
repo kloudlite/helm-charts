@@ -28,6 +28,7 @@ tasks:
       CookieDomain: "{{.CookieDomain}}"
 
       DefaultProjectWorkspaceName: "default"
+      LogsAndMetricsHttpPort: 8192
 
       ClusterSvcAccount: kloudlite-cluster-svc-account
       NormalSvcAccount: kloudlite-svc-account
