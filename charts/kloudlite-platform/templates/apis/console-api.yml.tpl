@@ -99,7 +99,7 @@ spec:
         - key: MSVC_TEMPLATE_FILE_PATH
           value: /console.d/templates/managed-svc-templates.yml
 
-        - key: LOG_AND_METRICS_HTTP_PORT
+        - key: LOGS_AND_METRICS_HTTP_PORT
           value: {{.Values.LogsAndMetricsHttpPort}}
       volumes:
         - mountPath: /console.d/templates
