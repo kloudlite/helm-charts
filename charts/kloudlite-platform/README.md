@@ -82,6 +82,8 @@ helm show values kloudlite/kloudlite-platform
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| apps.accountsApi.configuration | object | `{}` |  |
+| apps.accountsApi.image | string | `"ghcr.io/kloudlite/platform/apis/accounts:v1.0.5-nightly"` | image (with tag) for accounts api |
 | apps.accountsWeb.image | string | `"ghcr.io/kloudlite/platform/web/accounts-web:v1.0.5-nightly"` | image (with tag) for accounts web |
 | apps.auditLoggingWorker.image | string | `"ghcr.io/kloudlite/platform/apis/audit-logging-worker:v1.0.5-nightly"` | image (with tag) for audit logging worker |
 | apps.authApi.configuration.oAuth2.enabled | bool | `false` | whether to enable oAuth2 |
@@ -102,9 +104,14 @@ helm show values kloudlite/kloudlite-platform
 | apps.authApi.configuration.oAuth2.google.enabled | bool | `false` | whether to enable google oAuth2 |
 | apps.authApi.image | string | `"ghcr.io/kloudlite/platform/apis/auth:v1.0.5-nightly"` | image (with tag) for auth api |
 | apps.authWeb.image | string | `"ghcr.io/kloudlite/platform/web/accounts-web:v1.0.5-nightly"` | image (with tag) for auth web |
-| apps.commsApi.configuration | object | `{"sendgridApiKey":"<sendgrid-api-key>","supportEmail":"<support-email>"}` | configurations for comms api |
+| apps.commsApi.configuration | object | `{"accountsWebInviteUrl":"https://accounts.platform.kloudlite.io/invite","kloudliteConsoleWebUrl":"https://console.platform.kloudlite.io","projectsWebInviteUrl":"https://projects.platform.kloudlite.io/invite","resetPasswordWebUrl":"https://auth.platform.kloudlite.io/reset-password","sendgridApiKey":"<sendgrid-api-key>","supportEmail":"<support-email>","verifyEmailWebUrl":"https://auth.platform.kloudlite.io/verify-email"}` | configurations for comms api |
+| apps.commsApi.configuration.accountsWebInviteUrl | string | `"https://accounts.platform.kloudlite.io/invite"` | accounts web invite url |
+| apps.commsApi.configuration.kloudliteConsoleWebUrl | string | `"https://console.platform.kloudlite.io"` | console web invite url |
+| apps.commsApi.configuration.projectsWebInviteUrl | string | `"https://projects.platform.kloudlite.io/invite"` | projects web invite url |
+| apps.commsApi.configuration.resetPasswordWebUrl | string | `"https://auth.platform.kloudlite.io/reset-password"` | reset password web url |
 | apps.commsApi.configuration.sendgridApiKey | string | `"<sendgrid-api-key>"` | sendgrid api key for email communications, if (sendgrid.enabled) |
 | apps.commsApi.configuration.supportEmail | string | `"<support-email>"` | email through which we should be sending emails to target users, if (sendgrid.enabled) |
+| apps.commsApi.configuration.verifyEmailWebUrl | string | `"https://auth.platform.kloudlite.io/verify-email"` | verify email web url |
 | apps.commsApi.enabled | bool | `true` | whether to enable communications api |
 | apps.commsApi.image | string | `"ghcr.io/kloudlite/platform/apis/comms:v1.0.5-nightly"` | image (with tag) for comms api |
 | apps.consoleApi.configuration | object | `{}` |  |
@@ -175,7 +182,7 @@ helm show values kloudlite/kloudlite-platform
 | cookieDomain | string | `".platform.kloudlite.io"` | cookie domain dictates at what domain, the cookies should be set for auth or other purposes |
 | defaultProjectWorkspaceName | string | `"default"` | default project workspace name, that should be auto created, whenever you create a project |
 | grafana | object | `{"fullnameOverride":"grafana","global":{"storageClass":"<storage-class-name>"},"install":false,"nameOverride":"grafana","persistence":{"enabled":true,"size":"2Gi"}}` | grafana configuration, read more at https://github.com/bitnami/charts/blob/main/bitnami/grafana/values.yaml |
-| imagePullPolicy | string | `"Always"` | image pull policies for kloudlite pods, belonging to this chartvalues |
+| imagePullPolicy | string | `"Always"` | image pull policies for kloudlite pods, belonging to this chart |
 | ingress-nginx | object | `{"controller":{"admissionWebhooks":{"enabled":false,"failurePolicy":"Ignore"},"electionID":"ingress-nginx","extraArgs":{"default-ssl-certificate":"kl-core/kl-cert-wildcard-tls"},"ingressClass":"ingress-nginx","ingressClassByName":true,"ingressClassResource":{"controllerValue":"k8s.io/ingress-nginx","enabled":true,"name":"ingress-nginx"},"kind":"Deployment","podLabels":{},"resources":{"requests":{"cpu":"100m","memory":"200Mi"}},"service":{"type":"LoadBalancer"},"watchIngressWithoutClass":false},"install":false,"nameOverride":"ingress-nginx","rbac":{"create":false},"serviceAccount":{"create":false,"name":"kloudlite-cluster-svc-account"}}` | ingress nginx configurations, read more at https://kubernetes.github.io/ingress-nginx/ |
 | ingress-nginx.controller.extraArgs | object | `{"default-ssl-certificate":"kl-core/kl-cert-wildcard-tls"}` | ingress nginx controller extra args true |
 | ingress-nginx.controller.kind | string | `"Deployment"` | ingress nginx controller configuration |
@@ -209,6 +216,10 @@ helm show values kloudlite/kloudlite-platform
 | operators.byocOperator.enabled | bool | `true` | whether to enable byoc operator |
 | operators.byocOperator.image | string | `"ghcr.io/kloudlite/platform/operator/byoc:v1.0.5-nightly"` | image (with tag) for byoc operator |
 | persistence.XfsStorageClassName | string | `"<xfs-sc>"` | xfs storage class name |
+| persistence.awsEbsCsi.awsAccessKeyId | string | `"<aws-ebs-csi-key-id>"` | Aws Access Key Id , for aws-ebs-csi |
+| persistence.awsEbsCsi.awsSecretAccessKey | string | `"<aws-ebs-csi-secret-access-key>"` | Aws Secret Access Key, for aws-ebs-csi |
+| persistence.awsEbsCsi.enabled | bool | `true` |  |
+| persistence.awsEbsCsi.nodeSelector | object | `{}` |  |
 | persistence.storageClassName | string | `"<storage-class-name>"` | ext4 storage class name |
 | podLabels | object | `{}` | podlabels for pods belonging to this release |
 | redpanda-operator | object | `{"fullnameOverride":"redpanda-operator","install":false,"nameOverride":"redpanda-operator","resources":{"limits":{"cpu":"60m","memory":"60Mi"},"requests":{"cpu":"40m","memory":"40Mi"}},"webhook":{"enabled":false}}` | redpanda operator configuration, read more at https://vectorized.io/docs/quick-start-kubernetes |

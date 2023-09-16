@@ -92,6 +92,8 @@ vector:
         - "kl_account_name=‼️ Required"
         - --enrich-tag
         - "kl_cluster_name=‼️ Required"
+        - --enrich-tag
+        - "kl_resource_namespace={{.Namespace}}"
         - --filter-prefix
         - "kloudlite.io/"
         - --replace-prefix
@@ -117,6 +119,8 @@ vector:
       internal_metrics:
       kubernetes_logs:
         type: kubernetes_logs
+        
+        glob_minimum_cooldown_ms: 500
       kubelet_metrics_exporter:
         type: prometheus_scrape
         endpoints:

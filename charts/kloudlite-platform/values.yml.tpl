@@ -1,4 +1,4 @@
-# -- image pull policies for kloudlite pods, belonging to this chartvalues
+# -- image pull policies for kloudlite pods, belonging to this chart
 imagePullPolicy: Always
 
 nodeSelector: &nodeSelector {}
@@ -8,7 +8,6 @@ tolerations: &tolerations []
 
 # -- podlabels for pods belonging to this release
 podLabels: &podLabels {}
-  {{/* managed-by: "kloudlite-platform" */}}
 
 # -- cookie domain dictates at what domain, the cookies should be set for auth or other purposes
 cookieDomain: {{.CookieDomain | squote}}
@@ -511,6 +510,8 @@ managedResources:
   financeDb: finance-db
   financeRedis: finance-redis
 
+  accountsDb: finance-db
+
   iamDb: iam-db
   iamRedis: iam-redis
 
@@ -566,6 +567,11 @@ routers:
     # @ignored
     # -- router name for message office api router
     name: message-office-api
+
+  observabilityApi:
+    # @ignored
+    # -- router name for logs and metrics api
+    name: observability
   
 apps:
   authApi:
@@ -652,8 +658,24 @@ apps:
 
       # -- email through which we should be sending emails to target users, if (sendgrid.enabled)
       supportEmail: {{.SupportEmail}}
+
       # @ignored
       grpcPort: 3001
+
+      # -- accounts web invite url
+      accountsWebInviteUrl: https://accounts.{{.BaseDomain}}/invite
+
+      # -- projects web invite url
+      projectsWebInviteUrl: https://projects.{{.BaseDomain}}/invite
+
+      # -- console web invite url
+      kloudliteConsoleWebUrl: https://console.{{.BaseDomain}}
+
+      # -- reset password web url
+      resetPasswordWebUrl: https://auth.{{.BaseDomain}}/reset-password
+
+      # -- verify email web url
+      verifyEmailWebUrl: https://auth.{{.BaseDomain}}/verify-email
 
   consoleApi:
     # @ignored
@@ -668,6 +690,8 @@ apps:
       httpPort: 3000
       # @ignored
       grpcPort: 3001
+      # @ignored
+      logsAndMetricsHttpPort: 9100
 
   financeApi:
     # @ignored
@@ -676,6 +700,21 @@ apps:
 
     # -- image (with tag) for finance api
     image: {{.ImageFinanceApi}}
+  
+  accountsApi:
+    # @ignored
+    # -- workload name for accounts api
+    name: accounts-api
+
+    # -- image (with tag) for accounts api
+    image: {{.ImageAccountsApi}}
+
+    configuration:
+      # @ignored
+      httpPort: 3000
+
+      # @ignored
+      grpcPort: 3001
 
   iamApi:
     # @ignored

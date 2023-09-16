@@ -133,6 +133,10 @@ jobs:
           echo "uploading packaged helm-charts with cmd: \`gh release upload $RELEASE_TAG ${uploadOpts[@]} $tar_dir/*.tgz\`" 
           eval gh release upload $RELEASE_TAG ${uploadOpts[@]} $tar_dir/*.tgz
 
+          ## updating CRDs
+          cat crds/*.yml > crds/all.yml
+          gh release upload $RELEASE_TAG ${uploadOpts[@]} crds/*.yml
+
           # remove entries related to the current release_tag, for all the charts
           curl -f -L0 https://${{github.repository_owner}}.github.io/${{github.event.repository.name}}/index.yaml > $tar_dir/index.yaml
           echo "++++++++++++++++++++ Current index.yaml ++++++++++++++++++++"

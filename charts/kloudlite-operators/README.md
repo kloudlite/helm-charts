@@ -15,7 +15,7 @@ helm repo update
 
 ## Install Kloudlite CRDs
 ```console
-curl -L0 https://github.com/kloudlite/helm-charts/releases/download/kloudlite-crds-1.0.5-nightly/crds.yml | kubectl apply -f -
+curl -L0 https://github.com/kloudlite/helm-charts/releases/download/1.0.5-nightly/crds/all.yml | kubectl apply -f -
 ```
 
 ## Install Chart
@@ -84,6 +84,10 @@ helm show values kloudlite/kloudlite-operators
 | operators.csiDrivers.enabled | bool | `false` | whether to enable csi drivers operator |
 | operators.csiDrivers.image | string | `"ghcr.io/kloudlite/operators/csi-drivers:v1.0.5-nightly"` | csi drivers operator image and tag |
 | operators.csiDrivers.name | string | `"kl-csi-drivers"` | csi drivers operator workload name |
+| operators.helmChartsOperator.configuration.affinity | object | `{"nodeAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":{"nodeSelectorTerms":[{"matchExpressions":[{"key":"node-role.kubernetes.io/master","operator":"In","values":["true"]}]}]}}}` | affinity configuration for pod template, for pod affinity to node |
+| operators.helmChartsOperator.enabled | bool | `true` | whether to enable helm-charts operator |
+| operators.helmChartsOperator.image | string | `"ghcr.io/kloudlite/operators/helm-charts:v1.0.5-nightly"` | helm-charts operator image and tag |
+| operators.helmChartsOperator.name | string | `"kl-helm-charts-operator"` | helm-charts operator workload name |
 | operators.helmOperator.enabled | bool | `true` | whether to enable helm operator |
 | operators.helmOperator.image | string | `"ghcr.io/kloudlite/operators/helm:v1.0.5-nightly"` | helm operator image and tag |
 | operators.helmOperator.name | string | `"kl-helm-operator"` | helm operator workload name |

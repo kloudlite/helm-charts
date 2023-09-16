@@ -1,4 +1,4 @@
-# -- image pull policies for kloudlite pods, belonging to this chartvalues
+# -- image pull policies for kloudlite pods, belonging to this chart
 imagePullPolicy: Always
 
 nodeSelector: &nodeSelector {}
@@ -8,7 +8,6 @@ tolerations: &tolerations []
 
 # -- podlabels for pods belonging to this release
 podLabels: &podLabels {}
-  
 
 # -- cookie domain dictates at what domain, the cookies should be set for auth or other purposes
 cookieDomain: '.platform.kloudlite.io'
@@ -481,6 +480,8 @@ managedResources:
   financeDb: finance-db
   financeRedis: finance-redis
 
+  accountsDb: finance-db
+
   iamDb: iam-db
   iamRedis: iam-redis
 
@@ -536,6 +537,11 @@ routers:
     # @ignored
     # -- router name for message office api router
     name: message-office-api
+
+  observabilityApi:
+    # @ignored
+    # -- router name for logs and metrics api
+    name: observability
   
 apps:
   authApi:
@@ -622,8 +628,24 @@ apps:
 
       # -- email through which we should be sending emails to target users, if (sendgrid.enabled)
       supportEmail: <support-email>
+
       # @ignored
       grpcPort: 3001
+
+      # -- accounts web invite url
+      accountsWebInviteUrl: https://accounts.platform.kloudlite.io/invite
+
+      # -- projects web invite url
+      projectsWebInviteUrl: https://projects.platform.kloudlite.io/invite
+
+      # -- console web invite url
+      kloudliteConsoleWebUrl: https://console.platform.kloudlite.io
+
+      # -- reset password web url
+      resetPasswordWebUrl: https://auth.platform.kloudlite.io/reset-password
+
+      # -- verify email web url
+      verifyEmailWebUrl: https://auth.platform.kloudlite.io/verify-email
 
   consoleApi:
     # @ignored
@@ -638,6 +660,8 @@ apps:
       httpPort: 3000
       # @ignored
       grpcPort: 3001
+      # @ignored
+      logsAndMetricsHttpPort: 9100
 
   financeApi:
     # @ignored
@@ -646,6 +670,21 @@ apps:
 
     # -- image (with tag) for finance api
     image: ghcr.io/kloudlite/platform/apis/finance:v1.0.5-nightly
+  
+  accountsApi:
+    # @ignored
+    # -- workload name for accounts api
+    name: accounts-api
+
+    # -- image (with tag) for accounts api
+    image: ghcr.io/kloudlite/platform/apis/accounts:v1.0.5-nightly
+
+    configuration:
+      # @ignored
+      httpPort: 3000
+
+      # @ignored
+      grpcPort: 3001
 
   iamApi:
     # @ignored

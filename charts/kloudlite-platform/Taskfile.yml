@@ -103,6 +103,8 @@ tasks:
       ImageDnsApi: "{{.ImagePrefix}}/platform/apis/dns-api:{{.ImageVersionTag}}"
       ImageAuthApi: "{{.ImagePrefix}}/platform/apis/auth:{{.ImageVersionTag}}"
 
+      ImageAccountsApi: "{{.ImagePrefix}}/platform/apis/accounts:{{.ImageVersionTag}}"
+
 
       # workers
       ImageAuditLoggingWorker: "{{.ImagePrefix}}/platform/apis/audit-logging-worker:{{.ImageVersionTag}}"
@@ -127,6 +129,9 @@ tasks:
 
       # consider using 128 chars secrets, you can use `python -c "import secrets; print(secrets.token_urlsafe(128))"`
       TokenHashingSecret: '<token-hashing-secret>' 
+
+      AwsEbsCsiAccessKeyId: "<aws-ebs-csi-key-id>"
+      AwsEbsCsiSecretAccessKey: "<aws-ebs-csi-secret-access-key>"
     cmds:
       - task: cmd:setup
       - |+

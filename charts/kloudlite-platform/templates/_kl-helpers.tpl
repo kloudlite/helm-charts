@@ -68,3 +68,4 @@ tolerations: {{ include "tolerations" . | nindent 2 }}
 {{- define "kube-prometheus.name" -}}
 {{- printf "%s-kube-prometheus" .Release.Name -}}
 {{- end -}}
+
