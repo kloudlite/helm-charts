@@ -66,6 +66,6 @@ tolerations: {{ include "tolerations" . | nindent 2 }}
 
 {{/* [helm: kube-prometheus] */}}
 {{- define "kube-prometheus.name" -}}
-{{- printf "%s-kube-prometheus" .Release.Name -}}
+{{- printf "%s-prometheus" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
