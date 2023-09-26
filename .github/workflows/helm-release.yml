@@ -134,7 +134,10 @@ jobs:
           eval gh release upload $RELEASE_TAG ${uploadOpts[@]} $tar_dir/*.tgz
 
           ## updating CRDs
-          cat crds/*.yml > crds/all.yml
+          for file in $(ls crds/*); do
+            cat $file >> crds/all.yml
+            echo "---" >> crds/all.yml
+          done
           gh release upload $RELEASE_TAG ${uploadOpts[@]} crds/*.yml
 
           # remove entries related to the current release_tag, for all the charts
