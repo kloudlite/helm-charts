@@ -19,7 +19,9 @@ spec:
       targetPort: https
   selector:
     control-plane: {{$name}}
+
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -105,7 +107,7 @@ spec:
               value: {{.Values.operators.wgOperator.configuration.dnsHostedZone}}
 
           image: {{.Values.operators.wgOperator.image}}
-          imagePullPolicy: {{.Values.operators.wgOperator.ImagePullPolicy | default .Values.imagePullPolicy }}
+          imagePullPolicy: {{.Values.operators.wgOperator.imagePullPolicy | default .Values.imagePullPolicy }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -133,6 +135,6 @@ spec:
                 - ALL
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{.Values.svcAccountName | squote}}
+      serviceAccountName: {{ include "serviceAccountName" . | squote}}
       terminationGracePeriodSeconds: 10
 {{end}}
