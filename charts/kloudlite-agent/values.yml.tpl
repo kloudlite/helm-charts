@@ -32,6 +32,7 @@ agent:
   image: {{.ImageAgent}}
 
 # -- configuration for different kloudlite operators used in this chart
+preferOperatorsOnMasterNodes: {{.PrefersOperatorsOnMasterNodes}}
 operators:
   resourceWatcher:
     # -- enable/disable kloudlite resource watcher

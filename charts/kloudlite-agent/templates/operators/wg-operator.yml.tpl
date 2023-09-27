@@ -45,6 +45,9 @@ spec:
     spec:
       affinity:
         nodeAffinity:
+          {{- if .Values.preferOperatorsOnMasterNodes }}
+          {{include "preferred-node-affinity-to-masters" . | nindent 12 }}
+          {{- end }}
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:

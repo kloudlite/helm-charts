@@ -46,6 +46,7 @@ tasks:
       WgDnsHostedZone: ""
 
       EnableWgExamples: false
+      PrefersOperatorsOnMasterNodes: true
     cmds:
       - task: cmd:setup
       - |+

@@ -33,6 +33,7 @@ agent:
   image: ghcr.io/kloudlite/agents/kl-agent:v1.0.5-nightly
 
 # -- configuration for different kloudlite operators used in this chart
+preferOperatorsOnMasterNodes: true
 operators:
   resourceWatcher:
     # -- enable/disable kloudlite resource watcher
