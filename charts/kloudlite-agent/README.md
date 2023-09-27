@@ -96,7 +96,6 @@ helm show values kloudlite/kloudlite-agent
 | helmCharts.vector.name | string | `"vector"` |  |
 | imagePullPolicy | string | `"Always"` | container image pull policy |
 | messageOfficeGRPCAddr | string | `nil` | kloudlite message office api grpc address, should be in the form of 'grpc-host:grcp-port', grpc-api.domain.com:443 |
-| operators | object | `{"resourceWatcher":{"enabled":true,"image":"ghcr.io/kloudlite/agents/resource-watcher:v1.0.5-nightly"},"wgOperator":{"configuration":{"dnsHostedZone":null,"podCIDR":"10.42.0.0/16","svcCIDR":"10.43.0.0/16"},"enabled":true,"image":"ghcr.io/kloudlite/operators/wireguard:v1.0.5-nightly"}}` | configuration for different kloudlite operators used in this chart |
 | operators.resourceWatcher.enabled | bool | `true` | enable/disable kloudlite resource watcher |
 | operators.resourceWatcher.image | string | `"ghcr.io/kloudlite/agents/resource-watcher:v1.0.5-nightly"` | kloudlite resource watcher image name and tag |
 | operators.wgOperator.configuration | object | `{"dnsHostedZone":null,"podCIDR":"10.42.0.0/16","svcCIDR":"10.43.0.0/16"}` | wireguard configuration options |
@@ -105,4 +104,5 @@ helm show values kloudlite/kloudlite-agent
 | operators.wgOperator.configuration.svcCIDR | string | `"10.43.0.0/16"` | cluster services CIDR range |
 | operators.wgOperator.enabled | bool | `true` | whether to enable wg operator |
 | operators.wgOperator.image | string | `"ghcr.io/kloudlite/operators/wireguard:v1.0.5-nightly"` | wg operator image and tag |
+| preferOperatorsOnMasterNodes | bool | `true` | configuration for different kloudlite operators used in this chart |
 | svcAccountName | string | `"sa"` | k8s service account name, which all the pods installed by this chart uses, will always be of format <.Release.Name>-<.Values.svcAccountName> |
