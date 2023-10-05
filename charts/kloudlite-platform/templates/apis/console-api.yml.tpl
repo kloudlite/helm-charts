@@ -102,6 +102,9 @@ spec:
         - key: IAM_GRPC_ADDR
           value: {{.Values.apps.iamApi.name}}.{{.Release.Namespace}}.{{.Values.clusterInternalDNS}}:{{.Values.apps.iamApi.configuration.grpcPort}}
 
+        - key: INFRA_GRPC_ADDR
+          value: {{.Values.apps.infraApi.name}}.{{.Release.Namespace}}.{{.Values.clusterInternalDNS}}:{{.Values.apps.infraApi.configuration.grpcPort}}
+
         - key: DEFAULT_PROJECT_WORKSPACE_NAME
           value: {{.Values.defaultProjectWorkspaceName}}
 
