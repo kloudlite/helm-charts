@@ -301,6 +301,7 @@ apps:
     image: {{.ImageAuthApi}}
 
     configuration:
+      grpcPort: 3001
       oAuth2:
         # -- whether to enable oAuth2
         enabled: {{.OAuth2Enabled}}
@@ -411,6 +412,9 @@ apps:
       grpcPort: 3001
       # @ignored
       logsAndMetricsHttpPort: 9100
+
+      vpnDevicesMaxOffset: 255
+      vpnDevicesOffsetStart: 5
 
   accountsApi:
     # @ignored

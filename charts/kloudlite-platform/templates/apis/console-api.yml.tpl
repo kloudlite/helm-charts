@@ -11,12 +11,12 @@ spec:
   
   services:
     - port: 80
-      targetPort: {{.Values.apps.consoleApi.configuration.httpPort}}
+      targetPort: {{.Values.apps.consoleApi.configuration.httpPort | int}}
       name: http
       type: tcp
 
-    - port: {{.Values.apps.consoleApi.configuration.logsAndMetricsHttpPort}}
-      targetPort: {{.Values.apps.consoleApi.configuration.logsAndMetricsHttpPort}}
+    - port: {{.Values.apps.consoleApi.configuration.logsAndMetricsHttpPort | int }}
+      targetPort: {{.Values.apps.consoleApi.configuration.logsAndMetricsHttpPort | int }}
       name: http
       type: tcp
 
@@ -113,6 +113,15 @@ spec:
 
         - key: LOKI_SERVER_HTTP_ADDR
           value: http://{{ (index .Values.helmCharts "loki-stack").name }}.{{.Release.Namespace}}.{{.Values.clusterInternalDNS}}:3100
+
+        - key: PROM_HTTP_ADDR
+          value: http://{{ (index .Values.helmCharts "kube-prometheus").name }}-prometheus.{{.Release.Namespace}}.{{.Values.clusterInternalDNS}}:9090
+
+        - key: VPN_DEVICES_MAX_OFFSET
+          value: {{.Values.apps.consoleApi.configuration.vpnDevicesMaxOffset | squote}}
+
+        - key: VPN_DEVICES_OFFSET_START
+          value: {{.Values.apps.consoleApi.configuration.vpnDevicesOffsetStart | squote}}
 
         - key: PROM_HTTP_ADDR
           value: http://{{ (index .Values.helmCharts "kube-prometheus").name }}-prometheus.{{.Release.Namespace}}.{{.Values.clusterInternalDNS}}:9090
