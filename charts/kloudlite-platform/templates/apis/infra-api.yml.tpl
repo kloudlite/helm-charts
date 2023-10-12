@@ -42,7 +42,7 @@ spec:
           refKey: URI
 
         - key: HTTP_PORT
-          value: {{.Values.apps.infraApi.configuration.httpPort | squote}}
+          value: "3000"
 
         - key: GRPC_PORT
           value: {{.Values.apps.infraApi.configuration.grpcPort | squote}}

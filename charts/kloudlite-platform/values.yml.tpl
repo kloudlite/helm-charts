@@ -88,6 +88,10 @@ helmCharts:
           cpu: 40m
           memory: 40Mi
 
+  strimzi-operator:
+    enabled: true
+    name: strimzi-operator
+
   vector:
     enabled: true
     name: vector
@@ -215,6 +219,14 @@ kafka:
 managedServices:
   mongoSvc: mongo-svc
   redisSvc: redis-svc
+
+  kafkaSvc:
+    enabled: false
+    name: kafka
+    configuration:
+      persistence:
+        storageClass: {{.Ext4StorageClassName}}
+        size: 5Gi
 
 # @ignored
 managedResources:
