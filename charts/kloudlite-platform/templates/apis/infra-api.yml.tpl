@@ -47,9 +47,6 @@ spec:
         - key: GRPC_PORT
           value: {{.Values.apps.infraApi.configuration.grpcPort | squote}}
 
-        - key: GRPC_PORT
-          value: {{.Values.apps.infraApi.configuration.grpcPort | squote}}
-
         - key: COOKIE_DOMAIN
           value: "{{.Values.cookieDomain}}"
 
