@@ -37,13 +37,13 @@ spec:
         max: "150Mi"
       env:
         - key: HTTP_PORT
-          value: 3000
+          value: "3000"
 
         - key: EXTERNAL_GRPC_PORT
-          value: 3001
+          value: "3001"
 
         - key: INTERNAL_GRPC_PORT
-          value: 3002
+          value: "3002"
 
         - key: DB_URI
           type: secret

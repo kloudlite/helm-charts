@@ -6,9 +6,9 @@ metadata:
 spec:
   serviceTemplate:
     apiVersion: mongodb.msvc.kloudlite.io/v1
-    kind: ClusterService
+    kind: StandaloneService
     spec:
-      replicas: 3
+{{/*      replicas: 3*/}}
       resources:
         cpu:
           min: 400m

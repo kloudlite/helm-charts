@@ -35,7 +35,7 @@ spec:
           value: "{{.Values.cookieDomain}}"
 
         - key: GRPC_PORT
-          value: 3001
+          value: "3001"
 
         - key: CONSOLE_SERVICE
           value: "console-api:3001"

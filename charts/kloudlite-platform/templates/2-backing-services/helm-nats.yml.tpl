@@ -21,12 +21,12 @@ spec:
         kloudlite.io/helmchart: "{{$chartName}}"
 
     fullnameOverride: {{$chartName}}
-    namespaceOverride: kloudlite
+    namespaceOverride: {{.Release.Namespace}}
 
     config:
       cluster:
-        enabled: true
-        replicas: 3
+        enabled: false
+{{/*        replicas: 1*/}}
 
         routeURLs:
           user: sample
@@ -45,10 +45,10 @@ spec:
             storageClassName: {{.Values.persistence.storageClasses.xfs}}
             name: {{$chartName}}-jetstream-pvc
 
-    podTemplate:
-      topologySpreadConstraints: 
-        kloudlite.io/provider.az:
-          maxSkew: 1
-          whenUnsatisfiable: DoNotSchedule
-          nodeAffinityPolicy: Honor
-          nodeTaintsPolicy: Honor
+{{/*    podTemplate:*/}}
+{{/*      topologySpreadConstraints: */}}
+{{/*        kloudlite.io/provider.az:*/}}
+{{/*          maxSkew: 1*/}}
+{{/*          whenUnsatisfiable: DoNotSchedule*/}}
+{{/*          nodeAffinityPolicy: Honor*/}}
+{{/*          nodeTaintsPolicy: Honor*/}}

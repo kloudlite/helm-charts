@@ -44,7 +44,7 @@ spec:
           value: "3000"
 
         - key: GRPC_PORT
-          value: 3001
+          value: "3001"
 
         - key: COOKIE_DOMAIN
           value: "{{.Values.cookieDomain}}"
@@ -61,12 +61,6 @@ spec:
         - key: IAM_GRPC_ADDR
           value: "iam-api:3001"
 
-        - key: VPN_DEVICES_MAX_OFFSET
-          value: {{.Values.apps.consoleApi.configuration.vpnDevicesMaxOffset | squote}}
-
-        - key: VPN_DEVICES_OFFSET_START
-          value: {{.Values.apps.consoleApi.configuration.vpnDevicesOffsetStart | squote}}
-      
         - key: AWS_ACCESS_KEY
           value: {{.Values.apps.infraApi.configuration.aws.accessKey}}
 

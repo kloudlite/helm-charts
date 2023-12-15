@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{.Values.apps.consoleApi.name}}-managed-svc-template
+  name: console-api-managed-svc-template
   namespace: {{.Release.Namespace}}
 data:
   managed-svc-templates.yml: |+

@@ -31,7 +31,7 @@ spec:
         max: "150Mi"
       env:
         - key: HTTP_PORT
-          value: 3000
+          value: "3000"
 
         - key: LOGS_AND_METRICS_HTTP_PORT
           value: {{.Values.apps.consoleApi.configuration.logsAndMetricsHttpPort | squote}}

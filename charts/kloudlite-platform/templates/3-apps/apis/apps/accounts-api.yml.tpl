@@ -29,10 +29,10 @@ spec:
         max: "100Mi"
       env:
         - key: HTTP_PORT
-          value: 3000
+          value: "3000"
 
         - key: GRPC_PORT
-          value: 3001
+          value: "3001"
 
         - key: MONGO_URI
           type: secret

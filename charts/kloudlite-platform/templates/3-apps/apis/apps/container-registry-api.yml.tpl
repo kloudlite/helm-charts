@@ -106,7 +106,7 @@ spec:
           refKey: GITLAB_SCOPES
 
         - key: GITLAB_WEBHOOK_URL
-          value: https://{{.Values.routers.webhooksApi.name}}.{{.Values.baseDomain}}/git/gitlab
+          value: https://webhooks.{{.Values.baseDomain}}/git/gitlab
 
         - key: GITLAB_WEBHOOK_AUTHZ_SECRET
           value: {{.Values.apps.webhooksApi.configuration.webhookAuthz.gitlabSecret}}
