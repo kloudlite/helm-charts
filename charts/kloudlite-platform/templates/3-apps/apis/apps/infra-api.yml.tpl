@@ -30,79 +30,27 @@ spec:
         {{- /* - key: FINANCE_GRPC_ADDR */}}
         {{- /*   value: http://{{.Values.apps.financeApi.name}}:3001 */}}
         - key: ACCOUNTS_GRPC_ADDR
-          value: {{.Values.apps.accountsApi.name}}:{{.Values.apps.accountsApi.configuration.grpcPort}}
+          value: "accounts-api:3001"
 
-        - key: INFRA_DB_NAME
-          value: {{.Values.managedResources.infraDb}}
+{{/*        - key: INFRA_DB_NAME*/}}
+{{/*          value: {{.Values.managedResources.infraDb}}*/}}
 
         - key: INFRA_DB_URI
           type: secret
-          refName: "mres-{{.Values.managedResources.infraDb}}-creds"
+          refName: "mres-infra-db-creds"
           refKey: URI
 
         - key: HTTP_PORT
           value: "3000"
 
         - key: GRPC_PORT
-          value: {{.Values.apps.infraApi.configuration.grpcPort | squote}}
+          value: 3001
 
         - key: COOKIE_DOMAIN
           value: "{{.Values.cookieDomain}}"
 
-        - key: AUTH_REDIS_HOSTS
-          type: secret
-          {{- /* refName: "mres-{{.Values.managedResources.authRedis}}" */}}
-          refName: "msvc-{{.Values.managedServices.redisSvc}}"
-          refKey: HOSTS
-
-        - key: AUTH_REDIS_PASSWORD
-          type: secret
-          {{- /* refName: "mres-{{.Values.managedResources.authRedis}}" */}}
-          {{- /* refKey: PASSWORD */}}
-          refName: "msvc-{{.Values.managedServices.redisSvc}}"
-          refKey: ROOT_PASSWORD
-
-        - key: AUTH_REDIS_PREFIX
-          value: "auth"
-          {{- /* type: secret */}}
-          {{- /* refName: "mres-{{.Values.managedResources.authRedis}}" */}}
-          {{- /* refKey: PREFIX */}}
-
-        - key: AUTH_REDIS_USERNAME
-          value: ""
-          {{- /* type: secret */}}
-          {{- /* refName: "mres-{{.Values.managedResources.authRedis}}" */}}
-          {{- /* refKey: USERNAME */}}
-
-        {{- /* - key: KAFKA_BROKERS */}}
-        {{- /*   type: secret */}}
-        {{- /*   refName: {{.Values.secretNames.redpandaAdminAuthSecret}} */}}
-        {{- /*   refKey: KAFKA_BROKERS */}}
-        {{- /**/}}
-        {{- /* - key: KAFKA_USERNAME */}}
-        {{- /*   type: secret */}}
-        {{- /*   refName: {{.Values.secretNames.redpandaAdminAuthSecret}} */}}
-        {{- /*   refKey: USERNAME */}}
-        {{- /**/}}
-        {{- /* - key: KAFKA_PASSWORD */}}
-        {{- /*   type: secret */}}
-        {{- /*   refName: {{.Values.secretNames.redpandaAdminAuthSecret}} */}}
-        {{- /*   refKey: PASSWORD */}}
-        {{- /**/}}
-        {{- /* - key: KAFKA_TOPIC_INFRA_UPDATES */}}
-        {{- /*   value: {{ required "env var KAKFA_TOPIC_INFRA_UPDATES must be set" .Values.kafka.topicInfraStatusUpdates }} */}}
-        {{- /**/}}
-        {{- /* - key: KAFKA_TOPIC_BYOC_CLIENT_UPDATES */}}
-        {{- /*   value: {{.Values.kafka.topicBYOCClientUpdates}} */}}
-        {{- /**/}}
-        {{- /* - key: KAFKA_CONSUMER_GROUP_ID */}}
-        {{- /*   value: {{.Values.kafka.consumerGroupId}} */}}
-
         - key: NATS_URL
-          value: "nats://nats.kloudlite.svc.cluster.local:4222"
-
-        - key: NATS_STREAM
-          value: resource-sync
+          value: "nats://nats:4222"
 
         - key: ACCOUNT_COOKIE_NAME
           value: kloudlite-account
@@ -111,11 +59,7 @@ spec:
           value: {{.Release.Namespace}}
 
         - key: IAM_GRPC_ADDR
-          value: {{.Values.apps.iamApi.name}}.{{.Release.Namespace}}.svc.{{.Values.clusterInternalDNS}}:{{.Values.apps.iamApi.configuration.grpcPort}}
-
-        - key: MESSAGE_OFFICE_INTERNAL_GRPC_ADDR
-          value: {{.Values.apps.messageOfficeApi.name}}.{{.Release.Namespace}}.svc.{{.Values.clusterInternalDNS}}:{{.Values.apps.messageOfficeApi.configuration.internalGrpcPort}}
-
+          value: "iam-api:3001"
 
         - key: VPN_DEVICES_MAX_OFFSET
           value: {{.Values.apps.consoleApi.configuration.vpnDevicesMaxOffset | squote}}

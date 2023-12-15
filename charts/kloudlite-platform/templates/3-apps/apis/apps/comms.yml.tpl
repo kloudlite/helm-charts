@@ -29,7 +29,7 @@ spec:
 
       env:
         - key: GRPC_PORT
-          value: {{.Values.apps.commsApi.configuration.grpcPort | squote}}
+          value: 3001
 
         - key: SUPPORT_EMAIL
           value: {{.Values.apps.commsApi.configuration.supportEmail}}

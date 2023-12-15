@@ -11,17 +11,17 @@ spec:
 
   services:
     - port: 80
-      targetPort: {{.Values.apps.messageOfficeApi.configuration.httpPort}}
+      targetPort: 3000
       name: http
       type: tcp
 
-    - port: {{.Values.apps.messageOfficeApi.configuration.externalGrpcPort}}
-      targetPort: {{.Values.apps.messageOfficeApi.configuration.externalGrpcPort}}
+    - port: 3001
+      targetPort: 3001
       name: grpc
       type: tcp
 
-    - port: {{.Values.apps.messageOfficeApi.configuration.internalGrpcPort}}
-      targetPort: {{.Values.apps.messageOfficeApi.configuration.internalGrpcPort}}
+    - port: 3002
+      targetPort: 3002
       name: internal-grpc
       type: tcp
 
@@ -37,82 +37,21 @@ spec:
         max: "150Mi"
       env:
         - key: HTTP_PORT
-          value: {{.Values.apps.messageOfficeApi.configuration.httpPort | squote}}
+          value: 3000
 
         - key: EXTERNAL_GRPC_PORT
-          value: {{.Values.apps.messageOfficeApi.configuration.externalGrpcPort | squote}}
+          value: 3001
 
         - key: INTERNAL_GRPC_PORT
-          value: {{.Values.apps.messageOfficeApi.configuration.internalGrpcPort | squote}}
+          value: 3002
 
         - key: DB_URI
           type: secret
-          refName: "mres-{{.Values.managedResources.messageOfficeDb}}-creds"
+          refName: "mres-message-office-db-creds"
           refKey: URI
 
-        - key: DB_NAME
-          value: {{.Values.managedResources.messageOfficeDb}}
-
-        - key: AUTH_REDIS_HOSTS
-          type: secret
-          {{- /* refName: "mres-{{.Values.managedResources.authRedis}}" */}}
-          refName: "msvc-{{.Values.managedServices.redisSvc}}"
-          refKey: HOSTS
-
-        - key: AUTH_REDIS_PASSWORD
-          type: secret
-          {{- /* refName: "mres-{{.Values.managedResources.authRedis}}" */}}
-          {{- /* refKey: PASSWORD */}}
-          refName: "msvc-{{.Values.managedServices.redisSvc}}"
-          refKey: ROOT_PASSWORD
-
-        - key: AUTH_REDIS_PREFIX
-          value: "auth"
-          {{- /* type: secret */}}
-          {{- /* refName: "mres-{{.Values.managedResources.authRedis}}" */}}
-          {{- /* refKey: PREFIX */}}
-
-        - key: AUTH_REDIS_USERNAME
-          value: ""
-          {{- /* type: secret */}}
-          {{- /* refName: "mres-{{.Values.managedResources.authRedis}}" */}}
-          {{- /* refKey: USERNAME */}}
-
-        {{- /* - key: KAFKA_TOPIC_STATUS_UPDATES */}}
-        {{- /*   value: {{.Values.kafka.topicStatusUpdates}} */}}
-        {{- /**/}}
-        {{- /* - key: KAFKA_TOPIC_INFRA_UPDATES */}}
-        {{- /*   value: {{.Values.kafka.topicInfraStatusUpdates}} */}}
-        {{- /**/}}
-        {{- /* - key: KAFKA_TOPIC_ERROR_ON_APPLY */}}
-        {{- /*   value: {{.Values.kafka.topicErrorOnApply}} */}}
-        {{- /**/}}
-        {{- /* - key: KAFKA_TOPIC_CLUSTER_UPDATES */}}
-        {{- /*   value: {{.Values.kafka.topicClusterUpdates}} */}}
-        {{- /**/}}
-        {{- /* - key: KAFKA_CONSUMER_GROUP */}}
-        {{- /*   value: {{.Values.kafka.consumerGroupId}} */}}
-        {{- /**/}}
-        {{- /* - key: KAFKA_BROKERS */}}
-        {{- /*   type: secret */}}
-        {{- /*   refName: "{{.Values.secretNames.redpandaAdminAuthSecret}}" */}}
-        {{- /*   refKey: KAFKA_BROKERS */}}
-        {{- /**/}}
-        {{- /* - key: KAFKA_SASL_USERNAME */}}
-        {{- /*   type: secret */}}
-        {{- /*   refName: "{{.Values.secretNames.redpandaAdminAuthSecret}}" */}}
-        {{- /*   refKey: USERNAME */}}
-        {{- /**/}}
-        {{- /* - key: KAFKA_SASL_PASSWORD */}}
-        {{- /*   type: secret */}}
-        {{- /*   refName: "{{.Values.secretNames.redpandaAdminAuthSecret}}" */}}
-        {{- /*   refKey: PASSWORD */}}
-
         - key: NATS_URL
-          value: "nats://nats.kloudlite.svc.cluster.local:4222"
-
-        - key: NATS_STREAM
-          value: "resource-sync"
+          value: "nats://nats:4222"
 
         - key: VECTOR_GRPC_ADDR
           value: {{printf "%s:6000" (include "vector.name" .) | quote}}

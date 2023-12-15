@@ -11,17 +11,12 @@ spec:
 
   services:
     - port: 80
-      targetPort: {{.Values.apps.containerRegistryApi.configuration.httpPort}}
+      targetPort: 3000
       name: http
       type: tcp
 
     - port: 4001
-      targetPort: {{.Values.apps.containerRegistryApi.configuration.grpcPort}}
-      name: grpc
-      type: tcp
-
-    - port: {{.Values.apps.containerRegistryApi.configuration.grpcPort}}
-      targetPort: {{.Values.apps.containerRegistryApi.configuration.grpcPort}}
+      targetPort: 3001
       name: grpc
       type: tcp
 
@@ -45,62 +40,17 @@ spec:
         - key: ACCOUNT_COOKIE_NAME
           value: {{.Values.accountCookieName}}
 
-        {{- /* auth redis */}}
-        - key: AUTH_REDIS_HOSTS
-          type: secret
-          refName: mres-{{.Values.managedResources.authRedis}}
-          refKey: HOSTS
-
-        - key: AUTH_REDIS_PASSWORD
-          type: secret
-          refName: mres-{{.Values.managedResources.authRedis}}
-          refKey: PASSWORD
-
-        - key: AUTH_REDIS_PREFIX
-          type: secret
-          refName: mres-{{.Values.managedResources.authRedis}}
-          refKey: PREFIX
-
-        - key: AUTH_REDIS_USERNAME
-          type: secret
-          refName: mres-{{.Values.managedResources.authRedis}}
-          refKey: USERNAME
-
-        {{- /* registry redis */}}
-        - key: REGISTRY_REDIS_USERNAME
-          type: secret
-          refName: mres-{{.Values.managedResources.containerRegistryRedis}}
-          refKey: USERNAME
-
-        - key: REGISTRY_REDIS_PREFIX
-          type: secret
-          refName: mres-{{.Values.managedResources.containerRegistryRedis}}
-          refKey: PREFIX
-
-        - key: REGISTRY_REDIS_HOSTS
-          type: secret
-          refName: mres-{{.Values.managedResources.containerRegistryRedis}}
-          refKey: HOSTS
-
-        - key: REGISTRY_REDIS_PASSWORD
-          type: secret
-          refName: mres-{{.Values.managedResources.containerRegistryRedis}}
-          refKey: PASSWORD
-
         {{- /* registry db */}}
         - key: DB_URI
           type: secret
-          refName: mres-{{.Values.managedResources.containerRegistryDb}}
+          refName: mres-container-registry-db-creds
           refKey: URI
 
-        - key: DB_NAME
-          value: {{.Values.managedResources.containerRegistryDb}}
-
         - key: IAM_GRPC_ADDR
-          value: {{.Values.apps.iamApi.name}}.{{.Release.Namespace}}.svc.{{.Values.clusterInternalDNS}}:{{.Values.apps.iamApi.configuration.grpcPort}}
+          value: "iam-api:3001"
 
         - key: AUTH_GRPC_ADDR
-          value: {{.Values.apps.authApi.name}}.{{.Release.Namespace}}.svc.{{.Values.clusterInternalDNS}}:{{.Values.apps.authApi.configuration.grpcPort}}
+          value: "auth-api:3001"
 
         - key: JOB_BUILD_NAMESPACE
           value: {{.Values.apps.containerRegistryApi.configuration.jobBuildNamespace}}

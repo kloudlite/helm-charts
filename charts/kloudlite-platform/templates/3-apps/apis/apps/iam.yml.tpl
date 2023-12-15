@@ -9,8 +9,8 @@ spec:
   {{ include "node-selector-and-tolerations" . | nindent 2 }}
 
   services:
-    - port: {{.Values.apps.iamApi.configuration.grpcPort}}
-      targetPort: {{.Values.apps.iamApi.configuration.grpcPort}}
+    - port: 3001
+      targetPort: 3001
       name: grpc
       type: tcp
   containers:
@@ -25,46 +25,17 @@ spec:
         min: "50Mi"
         max: "100Mi"
       env:
-        - key: MONGO_DB_NAME
-          value: {{.Values.managedResources.iamDb}}
-
-        - key: REDIS_HOSTS
-          type: secret
-          {{- /* refName: mres-{{.Values.managedResources.iamRedis}} */}}
-          {{- /* refKey: HOSTS */}}
-          refName: msvc-{{.Values.managedServices.redisSvc}}
-          refKey: HOSTS
-
-
-        - key: REDIS_PASSWORD
-          type: secret
-          {{- /* refName: mres-{{.Values.managedResources.iamRedis}} */}}
-          {{- /* refKey: PASSWORD */}}
-          refName: msvc-{{.Values.managedServices.redisSvc}}
-          refKey: ROOT_PASSWORD
-
-        - key: REDIS_PREFIX
-          value: "iam"
-          {{- /* type: secret */}}
-          {{- /* refName: mres-{{.Values.managedResources.iamRedis}} */}}
-          {{- /* refKey: PREFIX */}}
-
-        - key: REDIS_USERNAME
-          value: ""
-          {{- /* type: secret */}}
-          {{- /* refName: mres-{{.Values.managedResources.iamRedis}} */}}
-          {{- /* refKey: USERNAME */}}
 
         - key: MONGO_DB_URI
           type: secret
-          refName: mres-{{.Values.managedResources.iamDb}}-creds
+          refName: mres-iam-db-creds
           refKey: URI
 
         - key: COOKIE_DOMAIN
           value: "{{.Values.cookieDomain}}"
 
         - key: GRPC_PORT
-          value: {{.Values.apps.iamApi.configuration.grpcPort | squote}}
+          value: 3001
 
         - key: CONSOLE_SERVICE
-          value: "{{.Values.apps.consoleApi.name}}:{{.Values.apps.consoleApi.configuration.grpcPort}}"
+          value: "console-api:3001"

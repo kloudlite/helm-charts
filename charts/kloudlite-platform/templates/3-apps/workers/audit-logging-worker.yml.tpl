@@ -21,7 +21,5 @@ spec:
       env:
         - key: EVENTS_DB_URI
           type: secret
-          refName: mres-events-db
+          refName: mres-events-db-creds
           refKey: URI
-        - key: EVENTS_DB_NAME
-          value: events-db

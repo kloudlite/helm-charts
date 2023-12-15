@@ -28,50 +28,16 @@ spec:
         min: "80Mi"
         max: "120Mi"
       env:
-        - key: MONGO_DB_NAME
-          value: {{.Values.managedResources.authDb}}
-
-        - key: REDIS_HOSTS
-          type: secret
-          {{- /* refName: mres-{{.Values.managedResources.authRedis}} */}}
-          refName: msvc-{{.Values.managedServices.redisSvc}}
-          refKey: HOSTS
-
-        - key: REDIS_PASSWORD
-          type: secret
-          {{- /* refName: mres-{{.Values.managedResources.authRedis}} */}}
-          refName: msvc-{{.Values.managedServices.redisSvc}}
-          {{- /* refKey: PASSWORD */}}
-          refKey: ROOT_PASSWORD
-
-        - key: REDIS_PREFIX
-          value: auth
-          {{- /* type: secret */}}
-          {{- /* refName: mres-{{.Values.managedResources.authRedis}} */}}
-          {{- /* refName: msvc-{{.Values.managedServices.redisSvc}} */}}
-          {{- /* refKey: PREFIX */}}
-
-        - key: REDIS_USERNAME
-          value: ""
-          {{- /* type: secret */}}
-          {{- /* refName: mres-{{.Values.managedResources.authRedis}} */}}
-          {{- /* refKey: USERNAME */}}
 
         - key: MONGO_URI
           type: secret
-          refName: mres-{{.Values.managedResources.authDb}}-creds
+          refName: mres-auth-db-creds
           refKey: URI
 
         - key: COMMS_SERVICE
-          value: "{{.Values.apps.commsApi.name}}.{{.Release.Namespace}}.svc.{{.Values.clusterInternalDNS}}:3001"
+          value: "comms:3001"
 
-        - key: COMMS_HOST
-          value: {{.Values.apps.commsApi.name}}
-
-        - key: COMMS_PORT
-          value: "3001"
-
-        - key: PORT
+        - key: HTTP_PORT
           value: "3000"
 
         - key: GRPC_PORT

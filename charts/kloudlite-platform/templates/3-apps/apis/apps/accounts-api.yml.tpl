@@ -29,34 +29,31 @@ spec:
         max: "100Mi"
       env:
         - key: HTTP_PORT
-          value: {{.Values.apps.accountsApi.configuration.httpPort | squote}}
+          value: 3000
 
         - key: GRPC_PORT
-          value: {{.Values.apps.accountsApi.configuration.grpcPort | squote }}
-
-        - key: MONGO_DB_NAME
-          value: {{.Values.managedResources.accountsDb}}
+          value: 3001
 
         - key: MONGO_URI
           type: secret
-          refName: mres-{{.Values.managedResources.accountsDb}}-creds
+          refName: mres-accounts-db-creds
           refKey: URI
 
         - key: COOKIE_DOMAIN
           value: "{{.Values.cookieDomain}}"
 
         - key: IAM_GRPC_ADDR
-          value: "{{.Values.apps.iamApi.name}}.{{.Release.Namespace}}.svc.{{.Values.clusterInternalDNS}}:{{.Values.apps.iamApi.configuration.grpcPort}}"
+          value: "iam:3001"
 
         - key: COMMS_GRPC_ADDR
-          value: "{{.Values.apps.commsApi.name}}.{{.Release.Namespace}}.svc.{{.Values.clusterInternalDNS}}:{{.Values.apps.commsApi.configuration.grpcPort}}"
+          value: "comms:3001"
 
         - key: CONTAINER_REGISTRY_GRPC_ADDR
-          value: "{{.Values.apps.containerRegistryApi.name}}.{{.Release.Namespace}}.svc.{{.Values.clusterInternalDNS}}:{{.Values.apps.containerRegistryApi.configuration.grpcPort}}"
+          value: "container-registry-api:3001"
 
         - key: CONSOLE_GRPC_ADDR
-          value: "{{.Values.apps.consoleApi.name}}.{{.Release.Namespace}}.svc.{{.Values.clusterInternalDNS}}:{{.Values.apps.consoleApi.configuration.grpcPort}}"
+          value: "console-api:3001"
 
         - key: AUTH_GRPC_ADDR
-          value: "{{.Values.apps.authApi.name}}.{{.Release.Namespace}}.svc.{{.Values.clusterInternalDNS}}:{{.Values.apps.authApi.configuration.grpcPort}}"
+          value: "auth-api:3001"
 
