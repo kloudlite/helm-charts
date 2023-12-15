@@ -86,24 +86,6 @@ helmCharts:
         region: <loki-s3-bucket-region>
         bucketName: <loki-s3-bucket-name>
 
-  # redpanda-operator:
-  #   enabled: true
-  #   name: redpanda-operator
-  #
-  #   configuration:
-  #     # -- cpu, and memory resources for redpanda operator
-  #     resources:
-  #       limits:
-  #         cpu: 60m
-  #         memory: 60Mi
-  #       requests:
-  #         cpu: 40m
-  #         memory: 40Mi
-
-  # strimzi-operator:
-  #   enabled: true
-  #   name: strimzi-operator
-
   vector:
     enabled: true
     name: vector
@@ -119,19 +101,16 @@ helmCharts:
 
     configuration:
       volumeSize: 2Gi
-      nodeSelector: *msvc-node-selector
 
   kube-prometheus:
     enabled: true
     name: prometheus
-
     configuration:
       prometheus:
         volumeSize: 2Gi
-        nodeSelector: *msvc-node-selector
       alertmanager:
         volumeSize: 2Gi
-        nodeSelector: *msvc-node-selector
+
 
   container-registry:
     enabled: true
@@ -150,26 +129,7 @@ secretNames:
   oAuthSecret: oauth-secrets
   # -- secret where all the webhook related should be
   webhookAuthzSecret: webhook-authz
-  # # -- secret where all the redpanda admin related creds should be
-  # redpandaAdminAuthSecret: msvc-redpanda-admin-auth
-  # -- harbor admin secret name
-  harborAdminSecret: harbor-admin-creds
 
-# # -- redpanda cluster configuration, read more at https://vectorized.io/docs/quick-start-kubernetes
-# redpandaCluster:
-#   create: true
-#   name: "redpanda"
-#   version: v22.1.6
-#   replicas: 1
-#   storage:
-#     capacity: 2Gi
-#   resources:
-#     requests:
-#       cpu: 200m
-#       memory: 200Mi
-#     limits:
-#       cpu: 300m
-#       memory: 400Mi
 
 clusterIssuer:
   # -- whether to install cluster issuer
@@ -200,132 +160,58 @@ cloudflareWildCardCert:
   domains:
     - '*.platform.kloudlite.io'
 
-# @ignored
-kafka:
-  # -- consumer group ID for kafka consumers running with this helm chart
-  consumerGroupId: control-plane
-
-  # -- kafka topic for dispatching audit log events
-  topicAuditEvents: kl-events
-
-  # -- kafka topic for dispatching harbor webhook messages
-  topicHarborWebhooks: kl-harbor-webhooks
-
-  # -- kafka topic for dispatching git webhook messages
-  topicGitWebhooks: kl-git-webhooks
-
-  # -- kafka topic for dispatching billing events
-  topicBilling: kl-billing
-
-  # -- kafka topic for messages regarding kloudlite resources on target clusters
-  topicStatusUpdates: kl-status-updates
-
-  # -- kafka topic for messages regarding infra resources on target clusters
-  topicInfraStatusUpdates: kl-infra-updates
-
-  # -- kafka topic for messages where target cluster sends updates for cluster BYOC resource
-  topicBYOCClientUpdates: kl-byoc-client-updates
-
-  # -- kafka topic for messages when an agent encounters an error while applying k8s resources
-  topicErrorOnApply: kl-error-on-apply
-
-  # -- kafka wait queue topic for all messages that are dispatched from platform to target clusters
-  topicSendMessagesToTargetWaitQueue: kl-send-messages-to-target-wait-queue
-
-# @ignored
-managedServices:
-  mongoSvc: mongo-svc
-  redisSvc: redis-svc
-
-  kafkaSvc:
-    enabled: false
-    name: kafka
-    configuration:
-      persistence:
-        storageClass: ""
-        size: 5Gi
-
-# @ignored
-managedResources:
-  authDb: auth-db
-  authRedis: auth-redis
-
-  accountsDb: accounts-db
-
-  dnsDb: dns-db
-  dnsRedis: dns-redis
-
-  financeDb: finance-db
-  financeRedis: finance-redis
-
-  iamDb: iam-db
-  iamRedis: iam-redis
-
-  infraDb: infra-db
-
-  consoleDb: console-db
-  consoleRedis: console-redis
-
-  messageOfficeDb: message-office-db
-
-  socketWebRedis: socket-web-redis
-  eventsDb: events-db
-
-  containerRegistryDb: container-registry-db
-  containerRegistryRedis: container-registry-redis
-
-routers:
-  authWeb:
-    # @ignored
-    # -- router name for auth web router
-    name: auth
-
-  accountsWeb:
-    # @ignored
-    # -- router name for accounts web router
-    name: accounts
-
-  consoleWeb:
-    # @ignored
-    # -- router name for console web router
-    name: console
-
-  socketWeb:
-    # @ignored
-    # -- router name for socket web router
-    name: socket
-
-  webhooksApi:
-    enabled: true
-    # @ignored
-    # -- router name for gateway api router
-    name: webhooks
-
-  gatewayApi:
-    # @ignored
-    # -- router name for gateway api router
-    name: gateway
-
-  dnsApi:
-    # @ignored
-    # -- router name for dns api router
-    name: dns-api
-
-  messageOfficeApi:
-    # @ignored
-    # -- router name for message office api router
-    name: message-office-api
-
-  observabilityApi:
-    # @ignored
-    # -- router name for logs and metrics api
-    name: observability
+#routers:
+#  authWeb:
+#    # @ignored
+#    # -- router name for auth web router
+#    name: auth
+#
+#  accountsWeb:
+#    # @ignored
+#    # -- router name for accounts web router
+#    name: accounts
+#
+#  consoleWeb:
+#    # @ignored
+#    # -- router name for console web router
+#    name: console
+#
+#  socketWeb:
+#    # @ignored
+#    # -- router name for socket web router
+#    name: socket
+#
+#  webhooksApi:
+#    enabled: true
+#    # @ignored
+#    # -- router name for gateway api router
+#    name: webhooks
+#
+#  gatewayApi:
+#    # @ignored
+#    # -- router name for gateway api router
+#    name: gateway
+#
+#  dnsApi:
+#    # @ignored
+#    # -- router name for dns api router
+#    name: dns-api
+#
+#  messageOfficeApi:
+#    # @ignored
+#    # -- router name for message office api router
+#    name: message-office-api
+#
+#  observabilityApi:
+#    # @ignored
+#    # -- router name for logs and metrics api
+#    name: observability
 
 apps:
   authApi:
     # @ignored
     # -- workload name for auth api
-    name: auth-api
+#    name: auth-api
     # -- image (with tag) for auth api
     image: ghcr.io/kloudlite/platform/apis/auth:v1.0.5-nightly
 
@@ -373,21 +259,6 @@ apps:
           # -- google oAuth2 Client Secret
           clientSecret: <google-client-secret>
 
-  dnsApi:
-    enabled: false
-    # @ignored
-    # -- workload name for dns api
-    name: dns-api
-    # -- image (with tag) for dns api
-    image: ghcr.io/kloudlite/platform/apis/dns-api:v1.0.5-nightly
-
-    # -- configurations for dns api
-    configuration:
-      # -- list of all dnsNames for which, you want wildcard certificate to be issued for
-      dnsNames:
-        - "ns1.platform.kloudlite.io"
-      # -- base domain for CNAME for all the edges managed (or, to be managed) by this cluster
-      edgeCNAME: "edge.platform.kloudlite.io"
 
   commsApi:
     # -- whether to enable communications api
@@ -395,7 +266,7 @@ apps:
 
     # @ignored
     # -- workload name for comms api
-    name: comms-api
+#    name: comms-api
 
     # -- image (with tag) for comms api
     image: ghcr.io/kloudlite/platform/apis/comms:v1.0.5-nightly
@@ -429,7 +300,7 @@ apps:
   consoleApi:
     # @ignored
     # -- workload name for console api
-    name: console-api
+#    name: console-api
 
     # -- image (with tag) for console api
     image: ghcr.io/kloudlite/platform/apis/console:v1.0.5-nightly
@@ -448,7 +319,7 @@ apps:
   accountsApi:
     # @ignored
     # -- workload name for accounts api
-    name: accounts-api
+#    name: accounts-api
 
     # -- image (with tag) for accounts api
     image: ghcr.io/kloudlite/platform/apis/accounts:v1.0.5-nightly
@@ -463,7 +334,7 @@ apps:
   iamApi:
     # @ignored
     # -- workload name for iam api
-    name: iam-api
+#    name: iam-api
 
     # -- image (with tag) for iam api
     image: ghcr.io/kloudlite/platform/apis/iam:v1.0.5-nightly
@@ -475,7 +346,7 @@ apps:
   infraApi:
     # @ignored
     # -- workload name for infra api
-    name: infra-api
+#    name: infra-api
 
     # -- image (with tag) for infra api
     image: ghcr.io/kloudlite/platform/apis/infra:v1.0.5-nightly
@@ -502,7 +373,7 @@ apps:
   gatewayApi:
     # @ignored
     # -- workload name for gateway api
-    name: gateway-api
+#    name: gateway-api
     # -- image (with tag) for container registry api
     image: ghcr.io/kloudlite/platform/apis/gateway:v1.0.5-nightly
 
@@ -511,7 +382,7 @@ apps:
 
     # @ignored
     # -- workload name for container registry api
-    name: container-registry-api
+#    name: container-registry-api
 
     # -- image (with tag) for container registry api
     image: ghcr.io/kloudlite/platform/apis/container-registry:v1.0.5-nightly
@@ -535,7 +406,7 @@ apps:
       buildClusterAccountName: ""
 
       # -- namespace, in which build runs should be created
-      jobBuildNamespace: "kloudlite"
+      jobBuildNamespace: {.Release.Namespace}
 
       authorizerPort: 4000
 
@@ -560,44 +431,31 @@ apps:
   consoleWeb:
     # @ignored
     # -- workload name for console web
-    name: console-web
+#    name: console-web
     # -- image (with tag) for console web
     image: ghcr.io/kloudlite/platform/web/console-web:v1.0.5-nightly
 
   authWeb:
     # @ignored
     # -- workload name for auth web
-    name: auth-web
+#    name: auth-web
     # -- image (with tag) for auth web
     image: ghcr.io/kloudlite/platform/web/accounts-web:v1.0.5-nightly
 
   accountsWeb:
     # @ignored
     # -- workload name for accounts web
-    name: accounts-web
+#    name: accounts-web
     # -- image (with tag) for accounts web
     image: ghcr.io/kloudlite/platform/web/accounts-web:v1.0.5-nightly
 
   auditLoggingWorker:
     # @ignored
     # -- workload name for audit logging worker
-    name: audit-logging-worker
+#    name: audit-logging-worker
     # -- image (with tag) for audit logging worker
     image: ghcr.io/kloudlite/platform/apis/audit-logging-worker:v1.0.5-nightly
 
-  messagesDistributionWorker:
-    enabled: true
-    # @ignored
-    # -- workload name for audit logging worker
-    name: messages-distribution-worker
-    # -- image (with tag) for audit logging worker
-    image: ghcr.io/kloudlite/platform/workers/messages-distribution-worker:v1.0.5-nightly
-
-    configuration:
-      kafkaConsumerGroupId: "messages-distribution-worker"
-
-      newTopicPartitionCount: 3
-      newTopicReplicationCount: 1
 
   webhooksApi:
     enabled: true
@@ -639,6 +497,8 @@ apps:
       # -- consider using 128 characters random string, you can use `python -c "import secrets; print(secrets.token_urlsafe(128))"`
       tokenHashingSecret: <token-hashing-secret>
 
+      platformAccessToken: "sample"
+
 preferOperatorsOnMasterNodes: true
 
 operators:
@@ -653,12 +513,14 @@ operators:
     image: ghcr.io/kloudlite/operators/platform-operator:v1.0.5-nightly
 
     configuration:
+      resource_watcher:
+        platformAccessToken: <platform-access-token>
       nodepool:
-        cloudProviderName: ""
-        cloudProviderRegion: ""
+        cloudProviderName: "aws"
+        cloudProviderRegion: "ap-south"
 
-        k3sJoinToken: ""
-        k3sServerPublicHost: ""
+        k3sJoinToken: "asdasdkjnads"
+        k3sServerPublicHost: "asd32ewqdsa"
 
       cluster:
         jobImage:
@@ -669,13 +531,13 @@ operators:
 
         IACStateStore:
           # -- s3 bucket name, to store kloudlite's infrastructure-as-code remote state
-          s3BucketName: ""
+          s3BucketName: "sample"
           # -- s3 bucket region, to store kloudlite's infrastructure-as-code remote state
-          s3BucketRegion: ""
-          S3BucketDir: ""
+          s3BucketRegion: "ap-south-1"
+          s3BucketDir: "iac-state"
 
-          accessKey: ""
-          secretKey: ""
+          accessKey: "asdasdasd"
+          secretKey: "32kejwqdasn"
 
         cloudflare:
           # -- cloudflare api token, required to authenticate with cloudflare api
