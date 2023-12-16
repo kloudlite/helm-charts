@@ -9,6 +9,6 @@
   value: {{ include "msg-office-platform-access-token" $ }}
 
 - name: GRPC_ADDR
-  value: {{.Values.apps.messageOfficeApi.name}}:{{.Values.apps.messageOfficeApi.configuration.externalGrpcPort}}
+  value: message-office:{{.Values.apps.messageOfficeApi.configuration.externalGrpcPort}}
 
 {{- end -}}
