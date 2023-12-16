@@ -52,7 +52,7 @@ spec:
           value: {{.Values.clusterCookieName}}
 
         - key: NATS_URL
-          value: "nats://nats.kloudlite.svc.cluster.local:4222"
+          value: "nats://nats:4222"
 
         - key: IAM_GRPC_ADDR
           value: "iam:3001"
