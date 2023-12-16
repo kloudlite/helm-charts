@@ -116,6 +116,13 @@ helmCharts:
     enabled: true
     name: container-registry
 
+  nats:
+    enabled: true
+    configuration:
+      # -- could be 1 or 3
+      replicas: 3
+      topologySpreadConstraintsKey: "kloudlite.io/provider.az"
+
 persistence:
   storageClasses:
     # -- ext4 storage class name
@@ -406,7 +413,7 @@ apps:
       buildClusterAccountName: ""
 
       # -- namespace, in which build runs should be created
-      jobBuildNamespace: {.Release.Namespace}
+      jobBuildNamespace: ""
 
       authorizerPort: 4000
 

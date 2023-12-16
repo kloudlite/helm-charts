@@ -1,6 +1,7 @@
 {{- $chartName := "nats" }}
 
 ---
+{{- if .Values.helmCharts.nats.enabled }}
 apiVersion: crds.kloudlite.io/v1
 kind: HelmChart
 metadata:
@@ -25,8 +26,8 @@ spec:
 
     config:
       cluster:
-        enabled: false
-{{/*        replicas: 1*/}}
+        enabled: {{gt (.Values.helmCharts.nats.configuration.replicas| int64) 1}}
+        replicas: {{.Values.helmCharts.nats.configuration.replicas}}
 
         routeURLs:
           user: sample
@@ -45,10 +46,13 @@ spec:
             storageClassName: {{.Values.persistence.storageClasses.xfs}}
             name: {{$chartName}}-jetstream-pvc
 
-{{/*    podTemplate:*/}}
-{{/*      topologySpreadConstraints: */}}
-{{/*        kloudlite.io/provider.az:*/}}
-{{/*          maxSkew: 1*/}}
-{{/*          whenUnsatisfiable: DoNotSchedule*/}}
-{{/*          nodeAffinityPolicy: Honor*/}}
-{{/*          nodeTaintsPolicy: Honor*/}}
+      podTemplate:
+        {{- if gt (.Values.helmCharts.nats.configuration.replicas | int64) 1 }}
+        topologySpreadConstraints:
+          {{.Values.helmCharts.nats.configuration.topologySpreadConstraintsKey}}:
+            maxSkew: 1
+            whenUnsatisfiable: DoNotSchedule
+            nodeAffinityPolicy: Honor
+            nodeTaintsPolicy: Honor
+        {{- end }}
+{{- end }}

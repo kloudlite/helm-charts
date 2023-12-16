@@ -50,12 +50,21 @@ spec:
           refName: "mres-message-office-db-creds"
           refKey: URI
 
+        - key: DB_NAME
+          value: message-office-db
+
         - key: NATS_URL
           value: "nats://nats:4222"
+
+        - key: NATS_STREAM
+          value: resource-sync
 
         - key: VECTOR_GRPC_ADDR
           value: {{printf "%s:6000" (include "vector.name" .) | quote}}
 
         - key: TOKEN_HASHING_SECRET
           value: {{.Values.apps.messageOfficeApi.configuration.tokenHashingSecret | squote}}
+
+        - key: PLATFORM_ACCESS_TOKEN
+          value: {{ include "msg-office-platform-access-token" $ }}
 
