@@ -72,7 +72,7 @@ spec:
           value: {{.Values.envVars.nats.buckets.sessionKVBucketName}}
 
         - key: MESSAGE_OFFICE_INTERNAL_GRPC_ADDR
-          value: "message-office:3001"
+          value: "message-office:3002"
 
         - key: AWS_ACCESS_KEY
           value: {{.Values.aws.accessKey}}

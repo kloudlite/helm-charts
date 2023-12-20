@@ -47,10 +47,10 @@ data:
   value: "message-office.{{.Values.global.baseDomain}}:443"
 
 - name: KL_AWS_ACCESS_KEY
-  value: {{ required ".Values.operators.platformOperator.configuration.cluster.IACStateStore.accessKey must be set" .Values.operators.platformOperator.configuration.cluster.IACStateStore.accessKey }} 
+  value: {{ required ".Values.aws.accessKey" .Values.aws.accessKey }} 
 
 - name: KL_AWS_SECRET_KEY
-  value: {{ required ".Values.operators.platformOperator.configuration.cluster.IACStateStore.secretKey must be set" .Values.operators.platformOperator.configuration.cluster.IACStateStore.secretKey }}
+  value: {{ required ".Values.aws.secretKey" .Values.aws.secretKey }} 
 
 - name: IAC_JOB_IMAGE
   value: {{$clusterOperatorVars.jobImage }}
