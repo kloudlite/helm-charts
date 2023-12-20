@@ -1,20 +1,15 @@
----
-apiVersion: crds.kloudlite.io/v1
-kind: ManagedResource
+apiVersion: mongodb.msvc.kloudlite.io/v1
+kind: Database
 metadata:
-  name: message-office-db
+  name: {{.Values.envVars.db.messageOfficeDB}}
   namespace: {{.Release.Namespace}}
 spec:
-  resourceTemplate:
+  msvcRef:
     apiVersion: mongodb.msvc.kloudlite.io/v1
-    kind: Database
-
-    msvcRef:
-      apiVersion: mongodb.msvc.kloudlite.io/v1
-      kind: StandaloneService
-      name: mongo-svc
-
-    spec:
-      resourceName: message-office-db
-
----
+    {{- if .Values.mongo.runAsCluster }}
+    kind: ClusterService
+    {{- else }}
+    kind: StandaloneService
+    {{- end }}
+    name: mongo-svc
+  resourceName: message-office-db

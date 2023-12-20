@@ -5,12 +5,11 @@ metadata:
   name: gateway-api
   namespace: {{.Release.Namespace}}
 spec:
-  ingressClass: {{ (index .Values.helmCharts "ingress-nginx").configuration.ingressClassName }}
+  ingressClass: {{ .Values.global.ingressClassName }}
   domains:
-    - "gateway-api.{{.Values.baseDomain}}"
+    - "gateway-api.{{.Values.global.baseDomain}}"
   https:
     enabled: true
-    clusterIssuer: {{.Values.clusterIssuer.name}}
     forceRedirect: true
   cors:
     enabled: true
@@ -19,8 +18,8 @@ spec:
     allowCredentials: true
   basicAuth:
     enabled: true
-    username: {{.Values.apps.gatewayApi.name}}
+    username: admin
   routes:
-    - app: {{.Values.apps.gatewayApi.name}}
+    - app: gateway
       path: /
       port: 80

@@ -10,7 +10,7 @@ spec:
     - "{{.Values.routers.socketWeb.name}}.{{.Values.baseDomain}}"
   https:
     enabled: true
-    clusterIssuer: {{.Values.clusterIssuer.name}}
+    clusterIssuer: {{.Values.certIssuer.name}}
     forceRedirect: true
   routes:
     - app: {{.Values.apps.socketWeb.name}}

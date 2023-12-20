@@ -1,11 +1,11 @@
+{{- if .Values.apps.consoleWeb.enabled}}
 apiVersion: crds.kloudlite.io/v1
 kind: App
 metadata:
   name: console-web
   namespace: {{.Release.Namespace}}
 spec:
-  region: {{.Values.region | default ""}}
-  serviceAccount: {{.Values.normalSvcAccount}}
+  serviceAccount: {{.Values.global.normalSvcAccount}}
 
   {{ include "node-selector-and-tolerations" . | nindent 2 }}
 
@@ -17,27 +17,30 @@ spec:
   containers:
     - name: main
       image: {{.Values.apps.consoleWeb.image}}
-      imagePullPolicy: {{.Values.apps.consoleWeb.imagePullPolicy | default .Values.imagePullPolicy }}
+      imagePullPolicy: {{.Values.global.imagePullPolicy }}
       resourceCpu:
         min: "100m"
         max: "200m"
       resourceMemory:
         min: "200Mi"
         max: "300Mi"
-      livenessProbe: &probe
-        type: httpGet
-        initialDelay: 5
-        failureThreshold: 3
-        httpGet:
-          path: /console/assets/healthy.txt
-          port: 3000
-        interval: 10
-      readinessProbe: *probe
+{{/*      livenessProbe: &probe*/}}
+{{/*        type: httpGet*/}}
+{{/*        initialDelay: 5*/}}
+{{/*        failureThreshold: 3*/}}
+{{/*        httpGet:*/}}
+{{/*          path: /console/assets/healthy.txt*/}}
+{{/*          port: 3000*/}}
+{{/*        interval: 10*/}}
+{{/*      readinessProbe: *probe*/}}
       env:
         - key: BASE_URL
-          value: {{.Values.baseDomain}}
+          value: "{{.Values.global.baseDomain}}"
+        - key: COOKIE_DOMAIN
+          value: "{{.Values.global.cookieDomain}}"
+        - key: GATEWAY_URL
+          value: "http://gateway"
         - key: PORT
           value: "3000"
-        - key: GITHUB_APP
-          value: "{{.Values.githubAppName}}"
 ---
+{{- end}}

@@ -4,7 +4,7 @@ metadata:
   name: accounts-api
   namespace: {{.Release.Namespace}}
 spec:
-  serviceAccount: {{ .Values.clusterSvcAccount }}
+  serviceAccount: {{ .Values.global.clusterSvcAccount }}
 
   {{ include "node-selector-and-tolerations" . | nindent 2 }}
 
@@ -19,8 +19,12 @@ spec:
       type: tcp
   containers:
     - name: main
+      {{if .Values.global.isDev}}
+      args:
+       - --dev
+      {{end}}
       image: {{.Values.apps.accountsApi.image}}
-      imagePullPolicy: {{.Values.apps.accountsApi.ImagePullPolicy | default .Values.imagePullPolicy }}
+      imagePullPolicy: {{.Values.global.imagePullPolicy }}
       resourceCpu:
         min: "50m"
         max: "80m"
@@ -39,8 +43,19 @@ spec:
           refName: mres-accounts-db-creds
           refKey: URI
 
+        - key: MONGO_DB_NAME
+          type: secret
+          refName: mres-accounts-db-creds
+          refKey: DB_NAME
+
+        - key: SESSION_KV_BUCKET
+          value: {{.Values.envVars.nats.buckets.sessionKVBucketName}}
+
+        - key: NATS_URL
+          value: {{.Values.envVars.nats.url}}
+
         - key: COOKIE_DOMAIN
-          value: "{{.Values.cookieDomain}}"
+          value: "{{.Values.global.cookieDomain}}"
 
         - key: IAM_GRPC_ADDR
           value: "iam:3001"

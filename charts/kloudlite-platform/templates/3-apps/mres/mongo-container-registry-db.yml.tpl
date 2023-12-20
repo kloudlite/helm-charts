@@ -1,19 +1,15 @@
----
-apiVersion: crds.kloudlite.io/v1
-kind: ManagedResource
+apiVersion: mongodb.msvc.kloudlite.io/v1
+kind: Database
 metadata:
-  name: registry-db
+  name: {{.Values.envVars.db.registryDB}}
   namespace: {{.Release.Namespace}}
 spec:
-  resourceTemplate:
+  msvcRef:
     apiVersion: mongodb.msvc.kloudlite.io/v1
-    kind: Database
-
-    msvcRef:
-      apiVersion: mongodb.msvc.kloudlite.io/v1
-      kind: StandaloneService
-      name: mongo-svc
-
-    spec:
-      resourceName: registry-db
----
+    {{- if .Values.mongo.runAsCluster }}
+    kind: ClusterService
+    {{- else }}
+    kind: StandaloneService
+    {{- end }}
+    name: mongo-svc
+  resourceName: registry-db

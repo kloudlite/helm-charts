@@ -5,17 +5,16 @@ metadata:
   name: message-office
   namespace: {{.Release.Namespace}}
 spec:
-  ingressClass: {{ (index .Values.helmCharts "ingress-nginx").configuration.ingressClassName }}
+  ingressClass: {{ .Values.global.ingressClassName }}
   backendProtocol: GRPC
   maxBodySizeInMB: 50
   domains:
-    - "message-office.{{.Values.baseDomain}}"
+    - "message-office.{{.Values.global.baseDomain}}"
   https:
     enabled: true
-    clusterIssuer: {{.Values.clusterIssuer.name}}
     forceRedirect: true
   routes:
-    - app: {{.Values.apps.messageOfficeApi.name}}
+    - app: message-office
       path: /
       port: {{.Values.apps.messageOfficeApi.configuration.externalGrpcPort}}
 ---

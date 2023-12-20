@@ -2,18 +2,17 @@
 apiVersion: crds.kloudlite.io/v1
 kind: Router
 metadata:
-  name: observe
+  name: webhooks
   namespace: {{.Release.Namespace}}
 spec:
-  ingressClass: {{ .Values.global.ingressClassName }}
-
+  ingressClass: {{.Values.global.ingressClassName}}
   domains:
-    - "observe.{{.Values.global.baseDomain}}"
+    - "webhooks.{{.Values.global.baseDomain}}"
   https:
     enabled: true
     forceRedirect: true
   routes:
-    - app: console-api
+    - app: webhooks-api
       path: /
-      port: 9100
+      port: 80
 ---

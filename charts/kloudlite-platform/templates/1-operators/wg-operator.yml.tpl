@@ -1,5 +1,5 @@
 {{if .Values.operators.wgOperator.enabled}}
-{{ $name := .Values.operators.wgOperator.name }}
+{{ $name := "wg-operator" }}
 ---
 apiVersion: v1
 kind: Service
@@ -59,7 +59,7 @@ spec:
                     values:
                       - linux
 
-        {{- if .Values.preferOperatorsOnMasterNodes }}
+        {{- if .Values.operators.preferOperatorsOnMasterNodes }}
         {{include "preferred-node-affinity-to-masters" . | nindent 10 }}
         {{- end }}
       containers:
@@ -107,13 +107,13 @@ spec:
               value: {{.Values.operators.wgOperator.configuration.svcCIDR}}
 
             - name: DNS_HOSTED_ZONE
-              value: {{.Values.baseDomain}}
+              value: {{.Values.global.baseDomain}}
 
             - name: CLUSTER_INTERNAL_DNS
-              value: {{.Values.clusterInternalDNS}}
+              value: {{.Values.global.clusterInternalDNS}}
 
-          image: {{.Values.operators.wgOperator.image.repository}}:{{.Values.operators.wgOperator.image.tag | default .Values.kloudlite_release }}
-          imagePullPolicy: {{.Values.operators.wgOperator.image.pullPolicy | default .Values.imagePullPolicy }}
+          image: {{.Values.operators.wgOperator.image}}
+          imagePullPolicy: {{.Values.global.imagePullPolicy }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -141,7 +141,7 @@ spec:
                 - ALL
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{.Values.clusterSvcAccount | squote}}
+      serviceAccountName: {{.Values.global.clusterSvcAccount | squote}}
       terminationGracePeriodSeconds: 10
 {{end}}
 

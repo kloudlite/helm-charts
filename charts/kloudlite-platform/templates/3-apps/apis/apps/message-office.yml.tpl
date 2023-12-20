@@ -4,8 +4,7 @@ metadata:
   name: message-office
   namespace: {{.Release.Namespace}}
 spec:
-  {{/* serviceAccount: {{.Values.normalSvcAccount}} */}}
-  serviceAccount: {{.Values.clusterSvcAccount}}
+  serviceAccount: {{.Values.global.clusterSvcAccount}}
 
   {{ include "node-selector-and-tolerations" . | nindent 2 }}
 
@@ -28,7 +27,11 @@ spec:
   containers:
     - name: main
       image: {{.Values.apps.messageOfficeApi.image}}
-      imagePullPolicy: {{.Values.apps.messageOfficeApi.imagePullPolicy | default .Values.imagePullPolicy }}
+      imagePullPolicy: {{.Values.global.imagePullPolicy}}
+      {{if .Values.global.isDev}}
+      args:
+       - --dev
+      {{end}}
       resourceCpu:
         min: "100m"
         max: "150m"
@@ -45,10 +48,21 @@ spec:
         - key: INTERNAL_GRPC_PORT
           value: "3002"
 
-        - key: DB_URI
+        - key: PLATFORM_ACCESS_TOKEN
+          value: {{.Values.apps.messageOfficeApi.configuration.platformAccessToken | squote}}
+
+        - key: NATS_STREAM
+          value: {{.Values.envVars.nats.streams.resourceSync.name}}
+
+        - key: MONGO_URI
           type: secret
           refName: "mres-message-office-db-creds"
           refKey: URI
+
+        - key: MONGO_DB_NAME
+          type: secret
+          refName: "mres-message-office-db-creds"
+          refKey: DB_NAME
 
         - key: NATS_URL
           value: "nats://nats:4222"

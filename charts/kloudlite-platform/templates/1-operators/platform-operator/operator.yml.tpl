@@ -3,10 +3,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{.Values.operators.platformOperator.name}}
+  name: kloudlite-platform-operator
   namespace: {{.Release.Namespace}}
   labels:
-    control-plane: {{.Values.operators.platformOperator.name}}
+    control-plane: kloudlite-platform-operator
 spec:
   ports:
     - name: https
@@ -14,28 +14,28 @@ spec:
       protocol: TCP
       targetPort: https
   selector:
-    control-plane: {{.Values.operators.platformOperator.name}}
+    control-plane: kloudlite-platform-operator
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    control-plane: {{.Values.operators.platformOperator.name}}
-  name: {{.Values.operators.platformOperator.name}}
+    control-plane: kloudlite-platform-operator
+  name: kloudlite-platform-operator
   namespace: {{.Release.Namespace}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      control-plane: {{.Values.operators.platformOperator.name}}
+      control-plane: kloudlite-platform-operator
   template:
     metadata:
       annotations:
         kubectl.kubernetes.io/default-container: manager
       labels:
-        control-plane: {{.Values.operators.platformOperator.name}}
+        control-plane: kloudlite-platform-operator
     spec:
-      {{- if .Values.preferOperatorsOnMasterNodes }}
+      {{- if .Values.operators.preferOperatorsOnMasterNodes }}
       affinity:
         nodeAffinity: {{include "preferred-node-affinity-to-masters" . | nindent 10 }}
       {{- end }}
@@ -70,25 +70,21 @@ spec:
             - --metrics-bind-address=127.0.0.1:8080
             - --leader-elect
           command:
-            - /manager
+            - /app/app
           image: {{.Values.operators.platformOperator.image}}
-          imagePullPolicy: {{.Values.operators.platformOperator.ImagePullPolicy | default .Values.imagePullPolicy }}
+          imagePullPolicy: {{.Values.global.imagePullPolicy }}
           env:
             - name: RECONCILE_PERIOD
               value: 30s
+            - name: SVC_ACCOUNT_NAME
+              value: "kloudlite-svc-account"
 
             - name: MAX_CONCURRENT_RECONCILES
               value: "5"
-
             {{ include "project-operator-env" . | nindent 12 }}
-
+            {{ include "cluster-operator-env" . | nindent 12 }}
             {{ include "router-operator-env" . | nindent 12 }}
 
-            {{ include "cluster-operator-env" . | nindent 12 }}
-
-            {{ include "nodepool-operator-env" . | nindent 12 }}
-
-            {{ include "resource-watcher-env" . | nindent 12 }}
 
           livenessProbe:
             httpGet:
@@ -117,6 +113,6 @@ spec:
                 - ALL
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{.Values.clusterSvcAccount}}
+      serviceAccountName: {{.Values.global.clusterSvcAccount}}
       terminationGracePeriodSeconds: 10
 {{end}}

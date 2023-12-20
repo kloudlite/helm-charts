@@ -1,8 +1,8 @@
-{{- if .Values.cloudflareWildCardCert.create }}
+{{- if .Values.cloudflareWildCardCert.enabled }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{.Values.cloudflareWildCardCert.name}}-cf-api-token
+  name: kloudlite-cf-api-token
   namespace: {{.Release.Namespace}}
 stringData:
   api-token: {{.Values.cloudflareWildCardCert.cloudflareCreds.secretToken}}
@@ -12,15 +12,15 @@ stringData:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: {{.Values.cloudflareWildCardCert.name}}
+  name: {{.Values.cloudflareWildCardCert.certificateName}}
   namespace: {{.Release.Namespace}}
 spec:
   dnsNames:
   {{range $v := .Values.cloudflareWildCardCert.domains}}
     - {{$v | squote}}
   {{end}}
-  secretName: {{.Values.cloudflareWildCardCert.secretName}}
+  secretName: kl-cert-wildcard-tls
   issuerRef:
-    name: {{.Values.clusterIssuer.name}}
+    name: {{.Values.certManager.certIssuer.name}}
     kind: ClusterIssuer
 {{- end}}

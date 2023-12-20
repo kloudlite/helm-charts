@@ -4,7 +4,7 @@ metadata:
   name: iam
   namespace: {{.Release.Namespace}}
 spec:
-  serviceAccount: {{.Values.normalSvcAccount}}
+  serviceAccount: {{.Values.global.normalSvcAccount}}
 
   {{ include "node-selector-and-tolerations" . | nindent 2 }}
 
@@ -16,7 +16,11 @@ spec:
   containers:
     - name: main
       image: {{.Values.apps.iamApi.image}}
-      imagePullPolicy: {{.Values.apps.iamApi.ImagePullPolicy | default .Values.imagePullPolicy }}
+      imagePullPolicy: {{.Values.global.imagePullPolicy }}
+      {{if .Values.global.isDev}}
+      args:
+       - --dev
+      {{end}}
       
       resourceCpu:
         min: "30m"
@@ -31,8 +35,13 @@ spec:
           refName: mres-iam-db-creds
           refKey: URI
 
+        - key: MONGO_DB_NAME
+          type: secret
+          refName: mres-iam-db-creds
+          refKey: DB_NAME
+
         - key: COOKIE_DOMAIN
-          value: "{{.Values.cookieDomain}}"
+          value: "{{.Values.global.cookieDomain}}"
 
         - key: GRPC_PORT
           value: "3001"

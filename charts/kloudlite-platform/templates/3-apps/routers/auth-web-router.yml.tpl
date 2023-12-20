@@ -5,18 +5,24 @@ metadata:
   name: auth
   namespace: {{.Release.Namespace}}
 spec:
-  ingressClass: {{ (index .Values.helmCharts "ingress-nginx").configuration.ingressClassName }}
+  ingressClass: {{ .Values.global.ingressClassName }}
   domains:
-    - auth.{{.Values.baseDomain}}
+    - auth.{{.Values.global.baseDomain}}
   https:
     enabled: true
-    clusterIssuer: {{.Values.clusterIssuer.name}}
     forceRedirect: true
   routes:
-    - app: {{.Values.apps.authWeb.name}}
+    {{if .Values.global.isDev}}
+    - app: auth-web
+      path: /ping
+      port: 8000
+      rewrite: false
+    - app: auth-web
       path: /socket
-      port: 6000
-    - app: {{.Values.apps.authWeb.name}}
+      port: 8000
+      rewrite: false
+    {{end}}
+    - app: auth-web
       path: /
       port: 80
 ---

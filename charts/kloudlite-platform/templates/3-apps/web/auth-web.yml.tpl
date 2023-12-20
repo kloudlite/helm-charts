@@ -1,11 +1,11 @@
+{{- if .Values.apps.authWeb.enabled}}
 apiVersion: crds.kloudlite.io/v1
 kind: App
 metadata:
   name: auth-web
   namespace: {{.Release.Namespace}}
 spec:
-  region: {{.Values.region | default ""}}
-  serviceAccount: {{.Values.normalSvcAccount}}
+  serviceAccount: {{.Values.global.normalSvcAccount}}
 
   {{ include "node-selector-and-tolerations" . | nindent 2 }}
   
@@ -21,7 +21,7 @@ spec:
   containers:
     - name: main
       image: {{.Values.apps.authWeb.image}}
-      imagePullPolicy: {{.Values.apps.authWeb.imagePullPolicy | default .Values.imagePullPolicy }}
+      imagePullPolicy: {{.Values.global.imagePullPolicy }}
       resourceCpu:
         min: "100m"
         max: "200m"
@@ -30,7 +30,12 @@ spec:
         max: "300Mi"
       env:
         - key: BASE_URL
-          value: "{{.Values.baseDomain}}"
+          value: "{{.Values.global.baseDomain}}"
+        - key: GATEWAY_URL
+          value: "http://gateway"
+        - key: COOKIE_DOMAIN
+          value: "{{.Values.global.cookieDomain}}"
         - key: PORT
           value: "3000"
 ---
+{{- end}}

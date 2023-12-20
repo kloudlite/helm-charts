@@ -6,7 +6,7 @@ metadata:
   annotations:
     config-checksum: {{ include (print $.Template.BasePath "/3-apps/apis/secrets/gateway-supergraph.yml.tpl") . | sha256sum }}
 spec:
-  serviceAccount: {{.Values.normalSvcAccount}}
+  serviceAccount: {{.Values.global.normalSvcAccount}}
 
   {{ include "node-selector-and-tolerations" . | nindent 2 }}
   
@@ -18,7 +18,11 @@ spec:
   containers:
     - name: main
       image: {{.Values.apps.gatewayApi.image}}
-      imagePullPolicy: {{.Values.apps.gatewayApi.ImagePullPolicy | default .Values.imagePullPolicy }}
+      imagePullPolicy: {{.Values.global.imagePullPolicy }}
+      {{if .Values.global.isDev}}
+      args:
+       - --dev
+      {{end}}
       env:
         - key: PORT
           value: '3000'
@@ -34,7 +38,7 @@ spec:
       volumes:
         - mountPath: /kloudlite
           type: config
-          refName: {{.Values.apps.gatewayApi.name}}-supergraph
+          refName: gateway-supergraph
 
       livenessProbe:
         type: httpGet

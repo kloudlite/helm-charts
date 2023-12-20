@@ -1,11 +1,10 @@
-{{- if .Values.apps.containerRegistryApi.enabled }}
 apiVersion: crds.kloudlite.io/v1
 kind: App
 metadata:
   name: container-registry-api
   namespace: {{.Release.Namespace}}
 spec:
-  serviceAccount: {{.Values.clusterSvcAccount}}
+  serviceAccount: {{.Values.global.clusterSvcAccount}}
 
   {{ include "node-selector-and-tolerations" . | nindent 2 }}
 
@@ -15,15 +14,19 @@ spec:
       name: http
       type: tcp
 
-    - port: 4001
-      targetPort: 3001
-      name: grpc
+    - port: 4000
+      targetPort: 4000
+      name: authorizer
       type: tcp
 
   containers:
     - name: main
       image: {{.Values.apps.containerRegistryApi.image}}
-      imagePullPolicy: {{.Values.apps.containerRegistryApi.ImagePullPolicy | default .Values.imagePullPolicy }}
+      imagePullPolicy: {{.Values.global.imagePullPolicy}}
+      {{if .Values.global.isDev}}
+      args:
+       - --dev
+      {{end}}
       resourceCpu:
         min: "30m"
         max: "50m"
@@ -32,22 +35,27 @@ spec:
         max: "80Mi"
       env:
         - key: PORT
-          value: {{.Values.apps.containerRegistryApi.configuration.httpPort | squote}}
+          value: "3000"
 
         - key: COOKIE_DOMAIN
-          value: {{.Values.cookieDomain}}
+          value: {{.Values.global.cookieDomain}}
 
         - key: ACCOUNT_COOKIE_NAME
-          value: {{.Values.accountCookieName}}
+          value: {{.Values.global.accountCookieName}}
 
         {{- /* registry db */}}
         - key: DB_URI
           type: secret
-          refName: mres-container-registry-db-creds
+          refName: mres-registry-db-creds
           refKey: URI
 
+        - key: DB_NAME
+          type: secret
+          refName: mres-registry-db-creds
+          refKey: DB_NAME
+
         - key: IAM_GRPC_ADDR
-          value: "iam-api:3001"
+          value: "iam:3001"
 
         - key: AUTH_GRPC_ADDR
           value: "auth-api:3001"
@@ -58,22 +66,22 @@ spec:
         {{- /* git provider setup */}}
         - key: GITHUB_CLIENT_ID
           type: secret
-          refName: {{.Values.secretNames.oAuthSecret}}
+          refName: {{.Values.oAuth.secretName}}
           refKey: GITHUB_CLIENT_ID
 
         - key: GITHUB_CLIENT_SECRET
           type: secret
-          refName: {{.Values.secretNames.oAuthSecret}}
+          refName: {{.Values.oAuth.secretName}}
           refKey: GITHUB_CLIENT_SECRET
 
         - key: GITHUB_CALLBACK_URL
           type: secret
-          refName: {{.Values.secretNames.oAuthSecret}}
+          refName: {{.Values.oAuth.secretName}}
           refKey: GITHUB_CALLBACK_URL
 
         - key: GITHUB_APP_ID
           type: secret
-          refName: {{.Values.secretNames.oAuthSecret}}
+          refName: {{.Values.oAuth.secretName}}
           refKey: GITHUB_APP_ID
 
         - key: GITHUB_APP_PK_FILE
@@ -81,35 +89,35 @@ spec:
 
         - key: GITHUB_SCOPES
           type: secret
-          refName: {{.Values.secretNames.oAuthSecret}}
+          refName: {{.Values.oAuth.secretName}}
           refKey: GITHUB_SCOPES
 
         {{- /* gitlab setup */}}
         - key: GITLAB_CLIENT_ID
           type: secret
-          refName: {{.Values.secretNames.oAuthSecret}}
+          refName: {{.Values.oAuth.secretName}}
           refKey: GITLAB_CLIENT_ID
 
         - key: GITLAB_CLIENT_SECRET
           type: secret
-          refName: {{.Values.secretNames.oAuthSecret}}
+          refName: {{.Values.oAuth.secretName}}
           refKey: GITLAB_CLIENT_SECRET
 
         - key: GITLAB_CALLBACK_URL
           type: secret
-          refName: {{.Values.secretNames.oAuthSecret}}
+          refName: {{.Values.oAuth.secretName}}
           refKey: GITLAB_CALLBACK_URL
 
         - key: GITLAB_SCOPES
           type: secret
-          refName: {{.Values.secretNames.oAuthSecret}}
+          refName: {{.Values.oAuth.secretName}}
           refKey: GITLAB_SCOPES
 
         - key: GITLAB_WEBHOOK_URL
-          value: https://webhooks.{{.Values.baseDomain}}/git/gitlab
+          value: https://webhooks.{{.Values.global.baseDomain}}/git/gitlab
 
         - key: GITLAB_WEBHOOK_AUTHZ_SECRET
-          value: {{.Values.apps.webhooksApi.configuration.webhookAuthz.gitlabSecret}}
+          value: {{.Values.webhookSecrets.gitlabSecret}}
 
         - key: BUILD_CLUSTER_ACCOUNT_NAME
           value: {{.Values.apps.containerRegistryApi.configuration.buildClusterAccountName}}
@@ -126,12 +134,21 @@ spec:
         - key: REGISTRY_AUTHORIZER_PORT
           value: {{.Values.apps.containerRegistryApi.configuration.authorizerPort | squote}}
 
+        - key: NATS_URL
+          value: {{.Values.envVars.nats.url}}
+
+        - key: NATS_STREAM
+          value: {{.Values.envVars.nats.streams.resourceSync.name}}
+
+        - key: SESSION_KV_BUCKET
+          value: {{.Values.envVars.nats.buckets.sessionKVBucketName}}
+
       volumes:
         - mountPath: /github
           type: secret
-          refName: {{.Values.secretNames.oAuthSecret}}
+          refName: {{.Values.oAuth.secretName}}
           items:
             - key: github-app-pk.pem
               fileName: github-app-pk.pem
 ---
-{{- end }}
+

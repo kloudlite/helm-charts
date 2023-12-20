@@ -1,22 +1,22 @@
-{{- if .Values.clusterIssuer.create }}
+{{- if .Values.certManager.enabled }}
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: {{.Values.clusterIssuer.name}}
+  name: {{.Values.certManager.certIssuer.name}}
 spec:
   acme:
-    email: {{.Values.clusterIssuer.acmeEmail}}
+    email: {{.Values.certManager.certIssuer.acmeEmail}}
     privateKeySecretRef:
-      name: {{.Values.clusterIssuer.name}}
+      name: {{.Values.certManager.certIssuer.name}}
     server: https://acme-v02.api.letsencrypt.org/directory
     solvers:
-      {{- if .Values.cloudflareWildCardCert.create}}
+      {{- if .Values.cloudflareWildCardCert.enabled}}
       - dns01:
           cloudflare:
             email: {{.Values.cloudflareWildCardCert.cloudflareCreds.email}}
             apiTokenSecretRef:
-              name: {{.Values.cloudflareWildCardCert.name}}-cf-api-token
+              name: kloudlite-cf-api-token
               key: api-token
         selector:
           dnsNames:
@@ -24,25 +24,10 @@ spec:
             - {{$v | squote}}
             {{- end }}
       {{- end}}
-      {{- $ingClass := (index .Values.helmCharts "ingress-nginx").configuration.ingressClassName }} 
+      {{- $ingClass := .Values.global.ingressClassName }}
       {{- if $ingClass }}
       - http01:
           ingress:
             class: "{{$ingClass}}"
       {{- end}}
 {{- end }}
-
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: cluster-issuer
-spec:
-  acme:
-    email: support@kloudlite.io
-    privateKeySecretRef:
-      name: cluster-issuer-tls
-    server: https://acme-v02.api.letsencrypt.org/directory
-    solvers:
-      - http01:
-          ingress:
-            class: "ingress-nginx"

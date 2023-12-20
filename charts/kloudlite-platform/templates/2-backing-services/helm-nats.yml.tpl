@@ -25,8 +25,10 @@ spec:
 
     config:
       cluster:
-        enabled: false
-{{/*        replicas: 1*/}}
+        enabled: {{.Values.nats.runAsCluster}}
+        {{- if .Values.nats.runAsCluster}}
+        replicas: {{.Values.nats.replicas}}
+        {{- end}}
 
         routeURLs:
           user: sample
@@ -45,10 +47,12 @@ spec:
             storageClassName: {{.Values.persistence.storageClasses.xfs}}
             name: {{$chartName}}-jetstream-pvc
 
-{{/*    podTemplate:*/}}
-{{/*      topologySpreadConstraints: */}}
-{{/*        kloudlite.io/provider.az:*/}}
-{{/*          maxSkew: 1*/}}
-{{/*          whenUnsatisfiable: DoNotSchedule*/}}
-{{/*          nodeAffinityPolicy: Honor*/}}
-{{/*          nodeTaintsPolicy: Honor*/}}
+{{- if .Values.nats.runAsCluster}}
+    podTemplate:
+      topologySpreadConstraints:
+        kloudlite.io/provider.az:
+          maxSkew: 1
+          whenUnsatisfiable: DoNotSchedule
+          nodeAffinityPolicy: Honor
+          nodeTaintsPolicy: Honor
+{{- end}}
