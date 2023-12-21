@@ -69,7 +69,7 @@ spec:
     tolerations: {{ $chartOpts.tolerations | default .Values.defaults.tolerations | toJson }}
     nodeSelector: {{ $chartOpts.nodeSelector | default .Values.defaults.nodeSelector | toJson }}
 
-  valuesYaml: |+
+  values:
     role: Agent
     containerPorts:
       - containerPort: 6000
