@@ -746,6 +746,7 @@ crons:
       schedule: "0 */2 * * *" # Runs every 2 hours
       encryptionPassword: ""
       storageSize: "10Gi"
+      webhook: ""
   natsBackup:
     name: nats-backup
     configuration:
@@ -756,3 +757,4 @@ crons:
       # bucket: ""
       encryptionPassword: ""
       storageSize: "50Gi"
+      webhook: ""
